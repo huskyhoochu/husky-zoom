@@ -8,4 +8,5 @@ const server = http.createServer(app);
 app.use(compression())
 app.use(express.static('dist'));
 
-server.listen(5000, () => console.log('server is running http://localhost:5000 ...'));
+const PORT = process.env.PORT;
+server.listen(PORT, () => console.log(`server is running http://localhost:${PORT} ..`));

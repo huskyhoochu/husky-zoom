@@ -8,4 +8,4 @@ export default {
   basePath: '/',
   plugins: [esbuildPlugin({ ts: true, target: 'auto' })],
   watch: true,
-}
+};

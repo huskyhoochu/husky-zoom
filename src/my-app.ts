@@ -1,5 +1,5 @@
-import {LitElement, css, html} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
+import { LitElement, css, html, TemplateResult } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 
 @customElement('my-app')
 export class SimpleGreeting extends LitElement {
@@ -15,7 +15,7 @@ export class SimpleGreeting extends LitElement {
   name?: string = 'World';
 
   // Render the UI as a function of component state
-  render() {
+  render(): TemplateResult<1> {
     return html`<p>Hello, ${this.name}!</p>`;
   }
 }

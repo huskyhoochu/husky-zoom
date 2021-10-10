@@ -1,17 +1,12 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es5",
-      "es6"
-    ],
+    "lib": ["es5", "es6"],
     "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "./build",
     "esModuleInterop": true,
-    "sourceMap": false,
+    "sourceMap": false
   },
-  "include": [
-    "server/**/*.ts"
-  ]
+  "include": ["server/**/*.ts"]
 }

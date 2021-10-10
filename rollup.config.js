@@ -22,6 +22,7 @@ export default {
     manualChunks: {
       lit: ['lit'],
       'vaadin-router': ['@vaadin/router'],
+      firebase: ['firebase'],
     },
   },
   preserveEntrySignatures: 'strict',

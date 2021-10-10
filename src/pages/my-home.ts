@@ -1,8 +1,10 @@
-import { LitElement, css, html, TemplateResult } from 'lit';
+import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-@customElement('my-app')
-export class SimpleGreeting extends LitElement {
+import '../layouts/main';
+
+@customElement('my-home')
+export class MyHome extends LitElement {
   // Define scoped styles right with your component, in plain CSS
   static styles = css`
     :host {
@@ -16,6 +18,10 @@ export class SimpleGreeting extends LitElement {
 
   // Render the UI as a function of component state
   render(): TemplateResult<1> {
-    return html`<p>Hello, ${this.name}!</p>`;
+    return html` <main-layout>
+      <main>
+        <p>${this.name}</p>
+      </main>
+    </main-layout>`;
   }
 }

@@ -10,6 +10,4 @@ WebRTC와 Socket IO 기능을 버무려 만든 비디오 채팅 웹 앱입니다
 
 ### Spec
 
-- [lit](https://lit.dev/): 구글에서 만든, [웹 컴포넌트](https://developer.mozilla.org/ko/docs/Web/Web_Components) 기반 프론트엔드 프레임워크
-- [rollupjs](https://rollupjs.org/guide/en/): 웹팩 보다 유연한 환경을 제공해주는 번들러 (프론트엔드 빌드 시 사용)
-- [esbuild](https://esbuild.github.io/): Golang으로 만들아진, 무시무시한 속도를 자랑하는 번들러 (서버 빌드 시 사용)
+- [lit](https://lit.dev/): 구글에서 만든, [웹 컴포넌트](https://developer.mozilla.org/ko/docs/Web/Web_Components) 기반 프론트엔드 프레임워크 -[snowpack](https://www.snowpack.dev/) 번들링하지 않는 번들러

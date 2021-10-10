@@ -19,6 +19,10 @@ app.use(compression());
 app.use(express.static(clientPath));
 app.use('/_snowpack', express.static(snowpackPath));
 
+app.get('*', (req, res) => {
+  res.sendFile('index.html', { root: clientPath });
+});
+
 const PORT = process.env.PORT;
 server.listen(PORT, () =>
   console.log(`server is running http://localhost:${PORT} ..`),

@@ -2,8 +2,10 @@ import { Router } from '@vaadin/router';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import 'normalize.css';
+import './styles/base.css';
 
-import './my-app';
+import './pages/my-home';
+import './pages/sign-in';
 
 const firebaseConfig = {
   apiKey: import.meta.env.SNOWPACK_PUBLIC_API_KEY,
@@ -19,4 +21,7 @@ const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
 const router = new Router(document.getElementById('outlet'));
-router.setRoutes([{ path: '/', component: 'my-app' }]);
+router.setRoutes([
+  { path: '/', component: 'my-home' },
+  { path: '/auth/login', component: 'sign-in' },
+]);

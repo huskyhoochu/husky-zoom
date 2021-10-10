@@ -18,7 +18,7 @@ export default {
     summary(),
   ],
   output: {
-    dir: 'dist',
+    dir: 'dist/client',
     manualChunks: {
       lit: ['lit'],
       'vaadin-router': ['@vaadin/router'],

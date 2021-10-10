@@ -6,10 +6,10 @@
   "scripts": {
     "dev:client": "wds",
     "dev:server": "nodemon --watch '*.ts' --exec 'ts-node --project tsconfig.server.json' server/index.ts",
-    "build:client": "rimraf dist && rollup -c",
-    "build:server": "rimraf build && node buildServer.js",
+    "build:client": "rimraf dist/client && rollup -c",
+    "build:server": "rimraf build/client && node buildServer.js",
     "build": "yarn build:client && yarn build:server",
-    "start": "node build/index.js"
+    "start": "node dist/server/index.js"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.5",

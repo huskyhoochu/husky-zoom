@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(compression())
-app.use(express.static('dist'));
+app.use(express.static('dist/client'));
 
 const PORT = process.env.PORT;
 server.listen(PORT, () => console.log(`server is running http://localhost:${PORT} ..`));

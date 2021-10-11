@@ -1,16 +1,13 @@
-import { css, html, LitElement, TemplateResult } from 'lit';
+import { html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import '../layouts/main';
+import '../components/structures/header';
+import { baseStyles, normalizeCSS } from '../styles/elements';
 
 @customElement('my-home')
 export class MyHome extends LitElement {
   // Define scoped styles right with your component, in plain CSS
-  static styles = css`
-    :host {
-      color: green;
-    }
-  `;
+  static styles = [normalizeCSS, baseStyles];
 
   // Declare reactive properties
   @property()
@@ -18,10 +15,11 @@ export class MyHome extends LitElement {
 
   // Render the UI as a function of component state
   render(): TemplateResult<1> {
-    return html` <main-layout>
+    return html`
+      <main-header></main-header>
       <main>
         <p>${this.name}</p>
       </main>
-    </main-layout>`;
+    `;
   }
 }

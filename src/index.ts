@@ -25,3 +25,9 @@ router.setRoutes([
   { path: '/', component: 'my-home' },
   { path: '/auth/login', component: 'sign-in' },
 ]);
+
+declare global {
+  interface ImportMeta {
+    env: any;
+  }
+}

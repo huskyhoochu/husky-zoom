@@ -1,7 +1,8 @@
 import { html, LitElement, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { createRef, ref, Ref } from 'lit/directives/ref.js';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, onValue, ref as dbRef, set } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
@@ -15,24 +16,33 @@ export class MyHome extends LitElement {
   // Define scoped styles right with your component, in plain CSS
   static styles = [normalizeCSS, baseStyles];
 
-  @property()
+  @state()
   roomId?: string = undefined;
 
-  @property()
+  @state()
+  private _auth = false;
+
+  @state()
   roomLength = 0;
 
   createRoomBtnRef: Ref<HTMLButtonElement> = createRef();
 
   connectedCallback(): void {
     super.connectedCallback();
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this._auth = true;
+      } else {
+        this._auth = false;
+      }
+    });
 
     const database = getDatabase();
     const roomsRef = dbRef(database, 'rooms');
     onValue(roomsRef, (snapshot) => {
-      const rooms = snapshot.val();
-      if (rooms) {
-        this.roomLength = Object.keys(rooms).length;
-      }
+      const rooms = snapshot.val() || {};
+      this.roomLength = Object.keys(rooms).length;
     });
   }
 
@@ -47,8 +57,8 @@ export class MyHome extends LitElement {
     const roomsRef = dbRef(database, 'rooms');
     return new Promise<boolean>((resolve, reject) => {
       onValue(roomsRef, (snapshot) => {
-        const rooms = snapshot.val();
-        if (rooms && Object.keys(rooms).length > 12) {
+        const rooms = snapshot.val() || {};
+        if (Object.keys(rooms).length > 12) {
           reject(
             new Error('방 생성 제한 갯수가 가득 찼습니다. 다음에 만들어주세요'),
           );
@@ -94,10 +104,14 @@ export class MyHome extends LitElement {
       <main>
         <h1>환영합니다!</h1>
         <p>채팅방을 만들어 주세요.</p>
-        <p>현재 방 갯수: ${this.roomLength}</p>
-        <button ${ref(this.createRoomBtnRef)} @click="${this.createRoom}">
-          방 만들기
-        </button>
+        <p>현재 방 갯수: ${this.roomLength} / 12</p>
+        ${this._auth
+    ? html`
+              <button ${ref(this.createRoomBtnRef)} @click="${this.createRoom}">
+                방 만들기
+              </button>
+            `
+    : html` <p>로그인하셔서 대화를 즐겨보세요.</p> `}
         ${this.roomId
     ? html`
               <div>

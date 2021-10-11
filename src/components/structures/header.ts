@@ -1,6 +1,5 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { cache } from 'lit/directives/cache.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { baseStyles, normalizeCSS } from '../../styles/elements';
@@ -133,6 +132,9 @@ export class MainHeader extends LitElement {
         this._user.displayName = user.displayName;
         this._auth = true;
       } else {
+        this._user.email = '';
+        this._user.photoURL = '';
+        this._user.displayName = '';
         this._auth = false;
       }
     });
@@ -165,32 +167,30 @@ export class MainHeader extends LitElement {
         <div>
           <a href="/">Home</a>
         </div>
-        ${cache(
-    this._auth
-      ? html`
-                <div class="wrapper">
-                  <button class="profile" @click=${this._toggleDropdown}>
-                    <img
-                      class="profile__img"
-                      src=${this._user.photoURL}
-                      alt=${this._user.displayName}
-                    />
+        ${this._auth
+    ? html`
+              <div class="wrapper">
+                <button class="profile" @click=${this._toggleDropdown}>
+                  <img
+                    class="profile__img"
+                    src=${this._user.photoURL}
+                    alt=${this._user.displayName}
+                  />
+                </button>
+                <div class="profile__dropdown ${classMap(classes)}">
+                  <p>${this._user.email}</p>
+                  <p>${this._user.displayName}</p>
+                  <button class="profile__logout" @click=${this._signOut}>
+                    로그아웃
                   </button>
-                  <div class="profile__dropdown ${classMap(classes)}">
-                    <p>${this._user.email}</p>
-                    <p>${this._user.displayName}</p>
-                    <button class="profile__logout" @click=${this._signOut}>
-                      로그아웃
-                    </button>
-                  </div>
                 </div>
-              `
-      : html`
-                <div>
-                  <a href="/auth/login">로그인</a>
-                </div>
-              `,
-  )}
+              </div>
+            `
+    : html`
+              <div>
+                <a href="/auth/login">로그인</a>
+              </div>
+            `}
       </header>
     `;
   }

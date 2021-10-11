@@ -6,6 +6,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, onValue, ref as dbRef, set } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
+import { io } from 'socket.io-client';
 
 import '../components/structures/header';
 import '../components/structures/footer';
@@ -30,6 +31,11 @@ export class MyHome extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
     const auth = getAuth();
+    const socket = io();
+    socket.on('delete-room', (roomId) => {
+      alert(`방이 삭제됨, ${roomId}`);
+    });
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this._auth = true;

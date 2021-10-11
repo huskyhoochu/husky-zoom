@@ -5,9 +5,12 @@ import compression from 'compression';
 import admin from 'firebase-admin';
 import dayjs from 'dayjs';
 import schedule from 'node-schedule';
+import { Server } from 'socket.io';
+import { EventEmitter } from 'events';
 
 const app = express();
 const server = http.createServer(app);
+const io = new Server(server);
 const isProd = process.env.NODE_ENV === 'production';
 
 const fireApp = admin.initializeApp({
@@ -16,6 +19,8 @@ const fireApp = admin.initializeApp({
 });
 
 const fireDB = fireApp.database();
+
+const dbEmitter = new EventEmitter();
 
 // 1분에 한 번씩 유효기간 지난 방 삭제
 schedule.scheduleJob('0 * * ? * *', () => {
@@ -29,7 +34,7 @@ schedule.scheduleJob('0 * * ? * *', () => {
         fireDB
           .ref(`rooms/${item.id}`)
           .remove(() => {
-            console.log(item.id, '삭제 완료');
+            dbEmitter.emit('admin-delete-room', item.id);
           })
           .catch((error) => {
             console.log(item.id, '삭제 실패', error);
@@ -53,6 +58,12 @@ app.use('/_snowpack', express.static(snowpackPath));
 
 app.get('*', (req, res) => {
   res.sendFile('index.html', { root: clientPath });
+});
+
+io.on('connection', (socket) => {
+  dbEmitter.on('admin-delete-room', (roomId) => {
+    socket.emit('delete-room', roomId);
+  });
 });
 
 const PORT = process.env.PORT;

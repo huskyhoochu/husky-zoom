@@ -142,7 +142,7 @@ export class MyHome extends LitElement {
       id: roomId,
       created_at: dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
       expires_at: dayjs(new Date())
-        .add(5, 'minutes')
+        .add(3, 'minutes')
         .format('YYYY-MM-DDTHH:mm:ss'),
       members: 0,
     });

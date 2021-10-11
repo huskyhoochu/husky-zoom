@@ -4,7 +4,6 @@ import express from 'express';
 import compression from 'compression';
 import admin from 'firebase-admin';
 import dayjs from 'dayjs';
-import schedule from 'node-schedule';
 import { Server } from 'socket.io';
 import { EventEmitter } from 'events';
 
@@ -23,7 +22,7 @@ const fireDB = fireApp.database();
 const dbEmitter = new EventEmitter();
 
 // 1분에 한 번씩 유효기간 지난 방 삭제
-schedule.scheduleJob('0 * * ? * *', () => {
+setInterval(() => {
   const roomsRef = fireDB.ref('rooms');
   roomsRef.get().then((result) => {
     const rooms = result.val() || {};
@@ -42,7 +41,7 @@ schedule.scheduleJob('0 * * ? * *', () => {
       }
     });
   });
-});
+}, 1000 * 60);
 
 const clientPath = isProd
   ? path.resolve(__dirname, '..', 'client')

@@ -58,16 +58,16 @@ jobs:
 
           touch dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
           echo "{" >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"type\": $TYPE," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"project_id\": $SNOWPACK_PUBLIC_PROJECT_ID," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"private_key_id\": $PRIVATE_KEY_ID," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"private_key\": $PRIVATE_KEY," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"client_email\": $CLIENT_EMAIL," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"client_id\": $CLIENT_ID," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"auth_uri\": $AUTH_URI," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"token_uri\": $TOKEN_URI," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"auth_provider_x509_cert_url\": $AUTH_PROVIDER_X509_CERT_URL," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"client_x509_cert_url\": $CLIENT_X509_CERT_URL" >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"type\": \"$TYPE\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"project_id\": \"$SNOWPACK_PUBLIC_PROJECT_ID\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"private_key_id\": \"$PRIVATE_KEY_ID\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"private_key\": \"$PRIVATE_KEY\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"client_email\": \"$CLIENT_EMAIL\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"client_id\": \"$CLIENT_ID\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"auth_uri\": \"$AUTH_URI\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"token_uri\": \"$TOKEN_URI\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"auth_provider_x509_cert_url\": \"$AUTH_PROVIDER_X509_CERT_URL\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"client_x509_cert_url\": \"$CLIENT_X509_CERT_URL\"" >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
           echo "}" >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
 
       - name: Upload artifact for deployment job

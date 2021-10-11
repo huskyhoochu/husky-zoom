@@ -1,7 +1,6 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { classMap } from 'lit/directives/class-map.js';
 import { createRef, ref, Ref } from 'lit/directives/ref.js';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, onValue, ref as dbRef, set } from 'firebase/database';
@@ -11,37 +10,8 @@ import { io } from 'socket.io-client';
 
 import '../components/structures/header';
 import '../components/structures/footer';
+import '../components/pages/room';
 import { baseStyles, normalizeCSS } from '../styles/elements';
-
-interface Room {
-  id: string;
-  created_at: string;
-  expires_at: string;
-  members: {
-    host: {
-      uid: string;
-      email: string;
-      display_name: string;
-      photo_url: string;
-      connection: {
-        is_connected: boolean;
-        connected_at: string;
-        disconnected_at: string;
-      };
-    };
-    guest: {
-      uid: string;
-      email: string;
-      display_name: string;
-      photo_url: string;
-      connection: {
-        is_connected: boolean;
-        connected_at: string;
-        disconnected_at: string;
-      };
-    };
-  };
-}
 
 @customElement('my-home')
 export class MyHome extends LitElement {
@@ -55,85 +25,6 @@ export class MyHome extends LitElement {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         grid-gap: 16px;
-      }
-
-      .room {
-        background-color: var(--indigo-200);
-        border-radius: var(--border-radius-lg);
-        padding: 12px 16px;
-        height: 200px;
-        cursor: pointer;
-        color: var(--gray-700);
-        font-size: var(--font-sm);
-        position: relative;
-        transition: box-shadow 0.3s var(--tr-in-out);
-      }
-
-      .room:hover {
-        box-shadow: var(--shadow-lg);
-      }
-
-      .room__badge {
-        font-weight: 700;
-        background-color: var(--indigo-300);
-        padding: 3px 6px;
-        border-radius: var(--border-radius-default);
-        width: 270px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        transition: width 0.3s var(--tr-in-out);
-      }
-
-      .room__badge:hover {
-        width: 100%;
-      }
-
-      .room__member {
-        margin: 16px 0;
-        display: flex;
-        align-items: center;
-      }
-
-      .host {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .host__img {
-        width: 70px;
-        height: 70px;
-        border-radius: 9999px;
-      }
-
-      .conn {
-        margin: 8px 0;
-        font-size: var(--font-xs);
-        display: flex;
-        align-items: center;
-      }
-
-      .conn__status {
-        display: inline-block;
-        width: var(--font-xs);
-        height: var(--font-xs);
-        border-radius: 9999px;
-        background-color: var(--gray-400);
-        margin-right: 4px;
-      }
-
-      .conn__active {
-        background-color: var(--green-400);
-      }
-
-      .room__time {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        padding: 12px 16px;
-        font-size: var(--font-xs);
       }
     `,
   ];
@@ -205,12 +96,6 @@ export class MyHome extends LitElement {
     });
   }
 
-  /* TODO: 방 만들기 절차
-   *  - 방 만들기를 누르면 먼저 방 갯수가 제한을 넘기지 않는지 서버에 확인한다
-   *  - 괜찮으면 랜덤 uuid를 생성한다
-   *  - 서버에 새로 발급된 방 정보를 보낸다
-   *  - 유저에게 링크를 제공한다
-   * */
   _checkIsNewRoomOK(): Promise<boolean> {
     const database = getDatabase();
     const roomsRef = dbRef(database, 'rooms');
@@ -296,13 +181,12 @@ export class MyHome extends LitElement {
     }
   }
 
+  renderRoom(room: Room): TemplateResult {
+    return html`<room-card .room=${room}></room-card>`;
+  }
+
   // Render the UI as a function of component state
   render(): TemplateResult<1> {
-    const hostClasses = {
-      conn__active: this._hostConnStateEnabled,
-      hidden: false,
-    };
-
     return html`
       <main-header></main-header>
       <main>
@@ -327,37 +211,7 @@ export class MyHome extends LitElement {
             `
     : ''}
         <div class="room-wrapper">
-          ${this.rooms.map(
-    (r: Room) =>
-      html` <div class="room">
-                <p class="room__badge">${r.id}</p>
-                <div class="room__member">
-                  <div class="host">
-                    <img
-                      class="host__img"
-                      src=${r.members.host.photo_url}
-                      alt=${r.members.host.display_name}
-                    />
-                    <div class="conn">
-                      <span
-                        class="conn__status ${classMap(hostClasses)}"
-                      ></span>
-                      <span
-                        >${r.members.host.connection.is_connected
-    ? '접속 중'
-    : '미접속'}</span
-                      >
-                    </div>
-                  </div>
-                </div>
-
-                <div class="room__time">
-                  <p>
-                    종료시각: ${dayjs(r.expires_at).format('YYYY.MM.YY HH.mm')}
-                  </p>
-                </div>
-              </div>`,
-  )}
+          ${this.rooms.map((r: Room) => this.renderRoom(r))}
         </div>
       </main>
       <main-footer></main-footer>

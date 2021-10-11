@@ -24,8 +24,6 @@ const dbEmitter = new EventEmitter();
 // 1분에 한 번씩 유효기간 지난 방 삭제
 schedule.scheduleJob('0 * * ? * *', () => {
   const now = isProd ? dayjs(new Date()).add(9, 'hours') : dayjs(new Date());
-  dbEmitter.emit('now', now.format('YYYY-MM-DDTHH:mm:ss'));
-
   console.log('방 점검 중...');
   const roomsRef = fireDB.ref('rooms');
   roomsRef.get().then((result) => {
@@ -70,9 +68,6 @@ app.get('*', (req, res) => {
 io.on('connection', (socket) => {
   dbEmitter.on('admin-delete-room', (roomId) => {
     socket.emit('delete-room', roomId);
-  });
-  dbEmitter.on('now', (time) => {
-    socket.emit('now', time);
   });
 });
 

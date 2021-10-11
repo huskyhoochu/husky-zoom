@@ -15,10 +15,7 @@ export class SignIn extends LitElement {
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
     signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        localStorage.setItem('huskyAccessToken', token);
+      .then(() => {
         Router.go('/');
       })
       .catch((error) => {

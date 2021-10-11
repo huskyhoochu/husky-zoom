@@ -46,7 +46,8 @@ jobs:
           npm install
           npm run build --if-present
           touch dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo $GOOGLE_APPLICATION_CREDENTIALS | >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          cat "$GOOGLE_APPLICATION_CREDENTIALS"
+          echo "$GOOGLE_APPLICATION_CREDENTIALS" | >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2

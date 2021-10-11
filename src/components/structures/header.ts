@@ -142,6 +142,7 @@ export class MainHeader extends LitElement {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
+        localStorage.removeItem('huskyAccessToken');
         alert('로그아웃 되었습니다');
         Router.go('/');
       })

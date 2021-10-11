@@ -4,7 +4,7 @@
   "main": "build/index.js",
   "license": "MIT",
   "scripts": {
-    "dev:client": "snowpack dev",
+    "dev:client": "rimraf dist/client && snowpack dev",
     "dev:server": "nodemon --watch '*.ts' --exec 'ts-node --project tsconfig.server.json' server/index.ts",
     "build:client": "rimraf dist/client && snowpack build --clean",
     "build:server": "rimraf dist/server && node buildServer.js",
@@ -52,6 +52,7 @@
     "express": "^4.17.1",
     "firebase": "^9.1.2",
     "lit": "^2.0.2",
-    "normalize.css": "^8.0.1"
+    "normalize.css": "^8.0.1",
+    "uuid": "^8.3.2"
   }
 }

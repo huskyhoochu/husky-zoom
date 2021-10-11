@@ -397,6 +397,7 @@ export const baseStyles = css`
     background-color: var(--indigo-50);
     color: var(--gray-700);
     border-radius: var(--border-radius-default);
+    padding: 4px 8px;
   }
 
   button:hover {
@@ -405,6 +406,11 @@ export const baseStyles = css`
 
   button:active {
     outline: 1px solid var(--indigo-400);
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    background-color: var(--gray-100);
   }
 
   main {

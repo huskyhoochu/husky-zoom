@@ -228,6 +228,24 @@ export class MyHome extends LitElement {
     });
   }
 
+  _checkAlreadyMyRoom(): Promise<boolean> {
+    const database = getDatabase();
+    const roomsRef = dbRef(database, 'rooms');
+    return new Promise<boolean>((resolve, reject) => {
+      onValue(roomsRef, (snapshot) => {
+        const rooms = Object.values(snapshot.val() || {}) as Room[];
+        const myRoom = rooms.find(
+          (room) => this._user.uid === room.members.host.uid,
+        );
+        if (myRoom) {
+          reject(new Error('이미 방을 개설하셨습니다.'));
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  }
+
   _sendNewRoomInfo(roomId: string): Promise<void> {
     const database = getDatabase();
     return set(dbRef(database, 'rooms/' + roomId), {
@@ -265,15 +283,14 @@ export class MyHome extends LitElement {
 
   async createRoom(): Promise<void> {
     try {
-      const isRoomOK = await this._checkIsNewRoomOK();
+      await this._checkIsNewRoomOK();
+      await this._checkAlreadyMyRoom();
 
-      if (isRoomOK) {
-        const newRoomId = uuidv4();
-        await this._sendNewRoomInfo(newRoomId);
-        this.roomId = newRoomId;
-        const createRoomBtn = this.createRoomBtnRef.value;
-        createRoomBtn.disabled = true;
-      }
+      const newRoomId = uuidv4();
+      await this._sendNewRoomInfo(newRoomId);
+      this.roomId = newRoomId;
+      const createRoomBtn = this.createRoomBtnRef.value;
+      createRoomBtn.disabled = true;
     } catch (e) {
       alert(e.message);
     }

@@ -11,6 +11,7 @@ import { io } from 'socket.io-client';
 import '../components/structures/header';
 import '../components/structures/footer';
 import '../components/pages/room';
+import '../components/pages/skeleton';
 import { baseStyles, normalizeCSS } from '../styles/elements';
 
 @customElement('my-home')
@@ -34,6 +35,9 @@ export class MyHome extends LitElement {
 
   @state()
   private _auth = false;
+
+  @state()
+  private _isInitial = true;
 
   @state()
   private _hostConnStateEnabled = false;
@@ -93,6 +97,7 @@ export class MyHome extends LitElement {
         (a: Room, b: Room) =>
           dayjs(a.created_at).unix() - dayjs(b.created_at).unix(),
       ) as Room[];
+      this._isInitial = false;
     });
   }
 
@@ -181,6 +186,10 @@ export class MyHome extends LitElement {
     }
   }
 
+  renderInitial(): TemplateResult {
+    return html`<room-skeleton></room-skeleton>`;
+  }
+
   renderRoom(room: Room): TemplateResult {
     return html`<room-card .room=${room}></room-card>`;
   }
@@ -211,7 +220,9 @@ export class MyHome extends LitElement {
             `
     : ''}
         <div class="room-wrapper">
-          ${this.rooms.map((r: Room) => this.renderRoom(r))}
+          ${this._isInitial
+    ? Array.from({ length: 3 }).map(() => this.renderInitial())
+    : this.rooms.map((r: Room) => this.renderRoom(r))}
         </div>
       </main>
       <main-footer></main-footer>

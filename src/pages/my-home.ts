@@ -95,6 +95,10 @@ export class MyHome extends LitElement {
       alert(`방이 삭제됨, ${roomId}`);
     });
 
+    socket.on('now', (time) => {
+      alert(`서버 현재 시각: ${time}`);
+    });
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this._auth = true;

@@ -61,7 +61,7 @@ jobs:
           echo "\"type\": \"$TYPE\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
           echo "\"project_id\": \"$SNOWPACK_PUBLIC_PROJECT_ID\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
           echo "\"private_key_id\": \"$PRIVATE_KEY_ID\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
-          echo "\"private_key\": \"$PRIVATE_KEY\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
+          echo "\"private_key\": $PRIVATE_KEY," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
           echo "\"client_email\": \"$CLIENT_EMAIL\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
           echo "\"client_id\": \"$CLIENT_ID\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json
           echo "\"auth_uri\": \"$AUTH_URI\"," >> dist/server/GOOGLE_APPLICATION_CREDENTIALS.json

@@ -31,7 +31,7 @@ schedule.scheduleJob('0 * * ? * *', () => {
     console.log('방 갯수', roomsArr.length);
     roomsArr.forEach((item) => {
       const expiresAt = dayjs(item.expires_at);
-      if (expiresAt.isAfter(new Date())) {
+      if (expiresAt.isBefore(new Date())) {
         console.log(item.id, '삭제 시도...');
         fireDB
           .ref(`rooms/${item.id}`)

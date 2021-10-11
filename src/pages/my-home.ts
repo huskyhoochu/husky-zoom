@@ -1,6 +1,7 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { createRef, ref, Ref } from 'lit/directives/ref.js';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, onValue, ref as dbRef, set } from 'firebase/database';
@@ -16,7 +17,30 @@ interface Room {
   id: string;
   created_at: string;
   expires_at: string;
-  members: number;
+  members: {
+    host: {
+      uid: string;
+      email: string;
+      display_name: string;
+      photo_url: string;
+      connection: {
+        is_connected: boolean;
+        connected_at: string;
+        disconnected_at: string;
+      };
+    };
+    guest: {
+      uid: string;
+      email: string;
+      display_name: string;
+      photo_url: string;
+      connection: {
+        is_connected: boolean;
+        connected_at: string;
+        disconnected_at: string;
+      };
+    };
+  };
 }
 
 @customElement('my-home')
@@ -51,7 +75,6 @@ export class MyHome extends LitElement {
 
       .room__badge {
         font-weight: 700;
-        float: right;
         background-color: var(--indigo-300);
         padding: 3px 6px;
         border-radius: var(--border-radius-default);
@@ -64,6 +87,45 @@ export class MyHome extends LitElement {
 
       .room__badge:hover {
         width: 100%;
+      }
+
+      .room__member {
+        margin: 16px 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .host {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .host__img {
+        width: 70px;
+        height: 70px;
+        border-radius: 9999px;
+      }
+
+      .conn {
+        margin: 8px 0;
+        font-size: var(--font-xs);
+        display: flex;
+        align-items: center;
+      }
+
+      .conn__status {
+        display: inline-block;
+        width: var(--font-xs);
+        height: var(--font-xs);
+        border-radius: 9999px;
+        background-color: var(--gray-400);
+        margin-right: 4px;
+      }
+
+      .conn__active {
+        background-color: var(--green-400);
       }
 
       .room__time {
@@ -83,9 +145,31 @@ export class MyHome extends LitElement {
   private _auth = false;
 
   @state()
+  private _hostConnStateEnabled = false;
+
+  @state()
+  private _user: {
+    photoURL: string;
+    email: string;
+    displayName: string;
+    uid: string;
+  };
+
+  @state()
   rooms: Room[] = [];
 
   createRoomBtnRef: Ref<HTMLButtonElement> = createRef();
+
+  constructor() {
+    super();
+
+    this._user = {
+      photoURL: '',
+      email: '',
+      displayName: '',
+      uid: '',
+    };
+  }
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -98,8 +182,16 @@ export class MyHome extends LitElement {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this._auth = true;
+        this._user.uid = user.uid;
+        this._user.email = user.email;
+        this._user.displayName = user.displayName;
+        this._user.photoURL = user.photoURL;
       } else {
         this._auth = false;
+        this._user.uid = '';
+        this._user.email = '';
+        this._user.displayName = '';
+        this._user.photoURL = '';
       }
     });
 
@@ -144,7 +236,30 @@ export class MyHome extends LitElement {
       expires_at: dayjs(new Date())
         .add(3, 'minutes')
         .format('YYYY-MM-DDTHH:mm:ss'),
-      members: 0,
+      members: {
+        host: {
+          uid: this._user.uid,
+          email: this._user.email,
+          display_name: this._user.displayName,
+          photo_url: this._user.photoURL,
+          connection: {
+            is_connected: false,
+            connected_at: '',
+            disconnected_at: '',
+          },
+        },
+        guest: {
+          uid: '',
+          email: '',
+          display_name: '',
+          photo_url: '',
+          connection: {
+            is_connected: false,
+            connected_at: '',
+            disconnected_at: '',
+          },
+        },
+      },
     });
   }
 
@@ -166,6 +281,11 @@ export class MyHome extends LitElement {
 
   // Render the UI as a function of component state
   render(): TemplateResult<1> {
+    const hostClasses = {
+      conn__active: this._hostConnStateEnabled,
+      hidden: false,
+    };
+
     return html`
       <main-header></main-header>
       <main>
@@ -191,14 +311,35 @@ export class MyHome extends LitElement {
     : ''}
         <div class="room-wrapper">
           ${this.rooms.map(
-    (r: Room) => html` <div class="room">
-              <p class="room__badge">${r.id}</p>
-              <div class="room__time">
-                <p>
-                  종료시각: ${dayjs(r.expires_at).format('YYYY.MM.YY HH.mm')}
-                </p>
-              </div>
-            </div>`,
+    (r: Room) =>
+      html` <div class="room">
+                <p class="room__badge">${r.id}</p>
+                <div class="room__member">
+                  <div class="host">
+                    <img
+                      class="host__img"
+                      src=${r.members.host.photo_url}
+                      alt=${r.members.host.display_name}
+                    />
+                    <div class="conn">
+                      <span
+                        class="conn__status ${classMap(hostClasses)}"
+                      ></span>
+                      <span
+                        >${r.members.host.connection.is_connected
+    ? '접속 중'
+    : '미접속'}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="room__time">
+                  <p>
+                    종료시각: ${dayjs(r.expires_at).format('YYYY.MM.YY HH.mm')}
+                  </p>
+                </div>
+              </div>`,
   )}
         </div>
       </main>

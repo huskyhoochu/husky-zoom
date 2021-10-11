@@ -14,7 +14,19 @@
     --gray-800: #1F2937;
     --gray-900: #111827;
 
-    /* blue */
+    /* green */
+    --green-50: #ECFDF5;
+    --green-100: #D1FAE5;
+    --green-200: #A7F3D0;
+    --green-300: #6EE7B7;
+    --green-400: #34D399;
+    --green-500: #10B981;
+    --green-600: #059669;
+    --green-700: #047857;
+    --green-800: #065F46;
+    --green-900: #065F46;
+
+        /* blue */
     --blue-50: #EFF6FF;
     --blue-100: #DBEAFE;
     --blue-200: #BFDBFE;
@@ -45,6 +57,12 @@
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* transition-timing */
+    --tr-linear: linear;
+    --tr-in: cubic-bezier(0.4, 0, 1, 1);
+    --tr-out: cubic-bezier(0, 0, 0.2, 1);
+    --tr-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
     /* font-size */
     --font-xs: 0.75rem;

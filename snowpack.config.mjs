@@ -15,6 +15,7 @@ export default {
     /* ... */
   },
   devOptions: {
+    polyfillNode: true,
     /* ... */
   },
   buildOptions: {

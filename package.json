@@ -49,6 +49,7 @@
   "dependencies": {
     "@vaadin/router": "^1.7.4",
     "compression": "^1.7.4",
+    "dayjs": "^1.10.7",
     "express": "^4.17.1",
     "firebase": "^9.1.2",
     "lit": "^2.0.2",

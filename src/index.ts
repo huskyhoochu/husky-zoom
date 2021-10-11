@@ -11,6 +11,7 @@ const firebaseConfig = {
   apiKey: import.meta.env.SNOWPACK_PUBLIC_API_KEY,
   authDomain: import.meta.env.SNOWPACK_PUBLIC_AUTH_DOMAIN,
   projectId: import.meta.env.SNOWPACK_PUBLIC_PROJECT_ID,
+  databaseURL: import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL,
   storageBucket: import.meta.env.SNOWPACK_PUBLIC_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.SNOWPACK_PUBLIC_MESSAGING_SENDER_ID,
   appId: import.meta.env.SNOWPACK_PUBLIC_APP_ID,

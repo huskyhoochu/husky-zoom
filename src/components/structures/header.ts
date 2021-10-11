@@ -1,4 +1,4 @@
-import { css, html, LitElement, PropertyValues, TemplateResult } from 'lit';
+import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { cache } from 'lit/directives/cache.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -122,8 +122,8 @@ export class MainHeader extends LitElement {
     this._dropdownEnabled = false;
   }
 
-  protected firstUpdated(_changedProperties: PropertyValues): void {
-    super.firstUpdated(_changedProperties);
+  connectedCallback(): void {
+    super.connectedCallback();
 
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {

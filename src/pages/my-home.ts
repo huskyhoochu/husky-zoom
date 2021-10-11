@@ -5,7 +5,6 @@ import { createRef, ref, Ref } from 'lit/directives/ref.js';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, onValue, ref as dbRef, set } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
-import 'dayjs/locale/ko';
 import dayjs from 'dayjs';
 import { io } from 'socket.io-client';
 
@@ -145,9 +144,8 @@ export class MyHome extends LitElement {
     const database = getDatabase();
     return set(dbRef(database, 'rooms/' + roomId), {
       id: roomId,
-      created_at: dayjs(new Date()).locale('ko').format('YYYY-MM-DDTHH:mm:ss'),
+      created_at: dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
       expires_at: dayjs(new Date())
-        .locale('ko')
         .add(3, 'minutes')
         .format('YYYY-MM-DDTHH:mm:ss'),
       members: 0,

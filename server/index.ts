@@ -4,6 +4,7 @@ import express from 'express';
 import compression from 'compression';
 import admin from 'firebase-admin';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 import schedule from 'node-schedule';
 import { Server } from 'socket.io';
 import { EventEmitter } from 'events';
@@ -23,7 +24,10 @@ const dbEmitter = new EventEmitter();
 
 // 1분에 한 번씩 유효기간 지난 방 삭제
 schedule.scheduleJob('0 * * ? * *', () => {
-  dbEmitter.emit('now', dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss'));
+  dbEmitter.emit(
+    'now',
+    dayjs(new Date()).locale('ko').format('YYYY-MM-DDTHH:mm:ss'),
+  );
   console.log('방 점검 중...');
   const roomsRef = fireDB.ref('rooms');
   roomsRef.get().then((result) => {
@@ -32,8 +36,8 @@ schedule.scheduleJob('0 * * ? * *', () => {
       Object.values(rooms);
     console.log('방 갯수', roomsArr.length);
     roomsArr.forEach((item) => {
-      const expiresAt = dayjs(item.expires_at);
-      if (expiresAt.isBefore(new Date())) {
+      const expiresAt = dayjs(item.expires_at).locale('ko');
+      if (expiresAt.isBefore(dayjs(new Date()).locale('ko'))) {
         console.log(item.id, '삭제 시도...');
         fireDB
           .ref(`rooms/${item.id}`)

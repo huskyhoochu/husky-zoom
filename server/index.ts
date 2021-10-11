@@ -2,10 +2,42 @@ import http from 'http';
 import path from 'path';
 import express from 'express';
 import compression from 'compression';
+import admin from 'firebase-admin';
+import dayjs from 'dayjs';
+import schedule from 'node-schedule';
 
 const app = express();
 const server = http.createServer(app);
 const isProd = process.env.NODE_ENV === 'production';
+
+const fireApp = admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: process.env.SNOWPACK_PUBLIC_DATABASE_URL,
+});
+
+const fireDB = fireApp.database();
+
+// 1분에 한 번씩 유효기간 지난 방 삭제
+schedule.scheduleJob('0 * * ? * *', () => {
+  const roomsRef = fireDB.ref('rooms');
+  roomsRef.get().then((result) => {
+    const rooms = result.val() || {};
+    const roomsArr: { id: string; expires_at: string }[] = Object.values(rooms);
+    roomsArr.forEach((item) => {
+      const expiresAt = dayjs(item.expires_at);
+      if (expiresAt.isBefore(new Date())) {
+        fireDB
+          .ref(`rooms/${item.id}`)
+          .remove(() => {
+            console.log(item.id, '삭제 완료');
+          })
+          .catch((error) => {
+            console.log(item.id, '삭제 실패', error);
+          });
+      }
+    });
+  });
+});
 
 const clientPath = isProd
   ? path.resolve(__dirname, '..', 'client')

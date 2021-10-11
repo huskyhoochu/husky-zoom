@@ -27,11 +27,13 @@ schedule.scheduleJob('0 * * ? * *', () => {
   const roomsRef = fireDB.ref('rooms');
   roomsRef.get().then((result) => {
     const rooms = result.val() || {};
-    const roomsArr: { id: string; expires_at: string }[] = Object.values(rooms);
+    const roomsArr: { id: string; created_at: string; expires_at: string }[] =
+      Object.values(rooms);
     console.log('방 갯수', roomsArr.length);
     roomsArr.forEach((item) => {
+      const createdAt = dayjs(item.created_at);
       const expiresAt = dayjs(item.expires_at);
-      if (expiresAt.isBefore(new Date())) {
+      if (createdAt.add(3, 'minutes').isAfter(expiresAt.toDate())) {
         console.log(item.id, '삭제 시도...');
         fireDB
           .ref(`rooms/${item.id}`)

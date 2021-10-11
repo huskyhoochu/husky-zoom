@@ -9,6 +9,7 @@ import {
 import { Router } from '@vaadin/router';
 
 import '../components/structures/header';
+import '../components/structures/footer';
 import { baseStyles, normalizeCSS } from '../styles/elements';
 
 @customElement('sign-in')

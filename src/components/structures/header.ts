@@ -26,7 +26,7 @@ export class MainHeader extends LitElement {
     baseStyles,
     css`
       header {
-        background-color: var(--blue-900);
+        background-color: var(--indigo-900);
         padding: 12px 20px;
         font-size: var(--font-sm);
         font-weight: bold;

@@ -367,6 +367,9 @@ export const baseStyles = css`
   * {
     font-family: 'Spoqa Han Sans Neo', 'system-ui', 'sans-serif';
     box-sizing: border-box;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,
@@ -391,17 +394,17 @@ export const baseStyles = css`
     appearance: none;
     border: none;
     cursor: pointer;
-    background-color: var(--gray-50);
+    background-color: var(--indigo-50);
     color: var(--gray-700);
     border-radius: var(--border-radius-default);
   }
 
   button:hover {
-    outline: 1px solid var(--gray-400);
+    outline: 1px solid var(--indigo-200);
   }
 
   button:active {
-    outline: 1px solid var(--gray-700);
+    outline: 1px solid var(--indigo-400);
   }
 
   main {

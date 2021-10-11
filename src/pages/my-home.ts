@@ -2,6 +2,7 @@ import { html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import '../components/structures/header';
+import '../components/structures/footer';
 import { baseStyles, normalizeCSS } from '../styles/elements';
 
 @customElement('my-home')
@@ -20,6 +21,7 @@ export class MyHome extends LitElement {
       <main>
         <p>${this.name}</p>
       </main>
+      <main-footer></main-footer>
     `;
   }
 }

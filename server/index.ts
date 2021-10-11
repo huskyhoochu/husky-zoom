@@ -4,6 +4,7 @@ import express from 'express';
 import compression from 'compression';
 import admin from 'firebase-admin';
 import dayjs from 'dayjs';
+import schedule from 'node-schedule';
 import { Server } from 'socket.io';
 import { EventEmitter } from 'events';
 
@@ -18,21 +19,24 @@ const fireApp = admin.initializeApp({
 });
 
 const fireDB = fireApp.database();
-
 const dbEmitter = new EventEmitter();
 
 // 1분에 한 번씩 유효기간 지난 방 삭제
-setInterval(() => {
+schedule.scheduleJob('0 * * ? * *', () => {
+  console.log('방 점검 중...');
   const roomsRef = fireDB.ref('rooms');
   roomsRef.get().then((result) => {
     const rooms = result.val() || {};
     const roomsArr: { id: string; expires_at: string }[] = Object.values(rooms);
+    console.log('방 갯수', roomsArr.length);
     roomsArr.forEach((item) => {
       const expiresAt = dayjs(item.expires_at);
-      if (expiresAt.isBefore(new Date())) {
+      if (expiresAt.isAfter(new Date())) {
+        console.log(item.id, '삭제 시도...');
         fireDB
           .ref(`rooms/${item.id}`)
           .remove(() => {
+            console.log(item.id, '삭제 성공');
             dbEmitter.emit('admin-delete-room', item.id);
           })
           .catch((error) => {
@@ -41,7 +45,7 @@ setInterval(() => {
       }
     });
   });
-}, 1000 * 60);
+});
 
 const clientPath = isProd
   ? path.resolve(__dirname, '..', 'client')

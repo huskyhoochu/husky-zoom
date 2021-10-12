@@ -191,7 +191,10 @@ export class MyHome extends LitElement {
   }
 
   renderRoom(room: Room): TemplateResult {
-    return html`<room-card .room=${room}></room-card>`;
+    return html`<room-card
+      .room=${room}
+      ?myRoomEnabled=${this._user.uid === room.members.host.uid}
+    ></room-card>`;
   }
 
   // Render the UI as a function of component state

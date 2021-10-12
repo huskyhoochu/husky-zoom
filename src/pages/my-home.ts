@@ -6,7 +6,6 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, onValue, ref as dbRef, set } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
-import { io } from 'socket.io-client';
 
 import '../components/structures/header';
 import '../components/structures/footer';
@@ -21,6 +20,62 @@ export class MyHome extends LitElement {
     normalizeCSS,
     baseStyles,
     css`
+      .greeting {
+        color: var(--gray-700);
+        text-align: right;
+      }
+
+      .greeting p {
+        margin: 8px 0;
+        font-size: var(--font-sm);
+      }
+
+      .create {
+        height: 140px;
+      }
+
+      .create__alert {
+        background-color: var(--yellow-50);
+        border: 1px solid var(--yellow-400);
+        color: var(--yellow-400);
+        font-weight: 700;
+        padding: 12px;
+        border-radius: 8px;
+        display: inline-block;
+      }
+
+      .create__link {
+        margin: 16px 0;
+        background-color: var(--green-50);
+        border: 1px solid var(--green-400);
+        color: var(--green-400);
+        font-weight: 700;
+        padding: 12px;
+        border-radius: 8px;
+        display: inline-block;
+      }
+
+      .create__link p {
+        margin-bottom: 8px;
+      }
+
+      .create__btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 9999px;
+        width: 120px;
+        height: 60px;
+        padding: 0 16px;
+        font-size: var(--font-sm);
+      }
+
+      .icon {
+        font-family: 'Material Icons', serif;
+        font-style: normal;
+        font-size: var(--font-2xl);
+      }
+
       .room-wrapper {
         margin: 36px 0;
         display: grid;
@@ -202,26 +257,44 @@ export class MyHome extends LitElement {
     return html`
       <main-header></main-header>
       <main>
-        <h1>환영합니다!</h1>
-        <p>채팅방을 만들어 주세요.</p>
-        <p>현재 방 갯수: ${this.rooms.length} / 12</p>
-        ${this._auth
+        <div class="greeting">
+          <h1>환영합니다!</h1>
+          <p>채팅방을 만들어 주세요.</p>
+          <p>현재 방 갯수: ${this.rooms.length} / 12</p>
+        </div>
+
+        <div class="create">
+          ${this._auth
     ? html`
-              <button ${ref(this.createRoomBtnRef)} @click="${this.createRoom}">
-                방 만들기
-              </button>
-            `
-    : html` <p>로그인하셔서 대화를 즐겨보세요.</p> `}
-        ${this.roomId
-    ? html`
-              <div>
-                <p>방 링크 생성!</p>
-                <a href="/room/ready/${ifDefined(this.roomId)}"
-                  >${window.location.origin + '/room/ready/' + this.roomId}</a
+                <button
+                  class="create__btn"
+                  ${ref(this.createRoomBtnRef)}
+                  @click="${this.createRoom}"
                 >
-              </div>
-            `
+                  <span class="icon material-icons-outlined"> add_task </span>
+                  <span>방 만들기</span>
+                </button>
+              `
+    : html`
+                <div class="create__alert">
+                  <span class="icon material-icons-outlined">
+                    error_outline
+                  </span>
+                  <p>대화방을 개설하려면 로그인해주세요.</p>
+                </div>
+              `}
+          ${this.roomId
+    ? html`
+                <div class="create__link">
+                  <p>방 링크 생성!</p>
+                  <a href="/room/ready/${ifDefined(this.roomId)}"
+                    >${window.location.origin + '/room/ready/' + this.roomId}</a
+                  >
+                </div>
+              `
     : ''}
+        </div>
+
         <div class="room-wrapper">
           ${this._isInitial
     ? Array.from({ length: 3 }).map(() => this.renderInitial())

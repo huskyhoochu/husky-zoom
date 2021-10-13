@@ -1,12 +1,14 @@
 import http from 'http';
 import path from 'path';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import compression from 'compression';
 import admin from 'firebase-admin';
 import dayjs from 'dayjs';
 import schedule from 'node-schedule';
+import { v4 as uuidv4 } from 'uuid';
 import { Server } from 'socket.io';
 import { EventEmitter } from 'events';
+import { createHashedPassword, createSalt } from './encrypt';
 
 const app = express();
 const server = http.createServer(app);
@@ -57,12 +59,73 @@ const snowpackPath = isProd
   ? path.resolve(__dirname, '..', '_snowpack')
   : path.resolve(__dirname, '..', 'dist', '_snowpack');
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 app.use(express.static(clientPath));
 app.use('/_snowpack', express.static(snowpackPath));
 
-app.get('*', (req, res) => {
+app.get('*', (req: Request, res: Response) => {
   res.sendFile('index.html', { root: clientPath });
+});
+
+app.post('/room', async (req: Request, res: Response) => {
+  const { password, uid, email, display_name, photo_url } = req.body;
+
+  try {
+    const salt = await createSalt();
+    const hashedPassword = await createHashedPassword(password, salt);
+
+    const roomId = uuidv4();
+    const roomsRef = fireDB.ref('rooms');
+    await roomsRef.child(roomId).set({
+      id: roomId,
+      created_at: dayjs(new Date())
+        .add(9, 'hours')
+        .format('YYYY-MM-DDTHH:mm:ss'),
+      expires_at: dayjs(new Date())
+        .add(9, 'hours')
+        .add(3, 'minutes')
+        .format('YYYY-MM-DDTHH:mm:ss'),
+      members: {
+        host: {
+          password: {
+            value: hashedPassword,
+            salt,
+          },
+          uid,
+          email,
+          display_name,
+          photo_url: photo_url,
+          connection: {
+            is_connected: false,
+            connected_at: '',
+            disconnected_at: '',
+          },
+        },
+        guest: {
+          password: {
+            value: '',
+            salt: '',
+          },
+          uid: '',
+          email: '',
+          display_name: '',
+          photo_url: '',
+          connection: {
+            is_connected: false,
+            connected_at: '',
+            disconnected_at: '',
+          },
+        },
+      },
+    });
+
+    res.send({ okay: true, room_id: roomId });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
 });
 
 io.on('connection', (socket) => {

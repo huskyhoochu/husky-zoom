@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@vaadin/router": "^1.7.4",
+    "axios": "^0.23.0",
     "compression": "^1.7.4",
     "dayjs": "^1.10.7",
     "express": "^4.17.1",

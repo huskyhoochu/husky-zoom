@@ -1,17 +1,17 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { createRef, ref, Ref } from 'lit/directives/ref.js';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase, onValue, ref as dbRef, set } from 'firebase/database';
-import io from 'socket.io-client';
-import { v4 as uuidv4 } from 'uuid';
+import { getDatabase, onValue, ref as dbRef } from 'firebase/database';
+import { io } from 'socket.io-client';
 import dayjs from 'dayjs';
 
 import '../components/structures/header';
 import '../components/structures/footer';
 import '../components/pages/room';
 import '../components/pages/skeleton';
+import '../components/pages/pw-modal';
 import { baseStyles, normalizeCSS } from '../styles/elements';
 
 @customElement('my-home')
@@ -87,9 +87,6 @@ export class MyHome extends LitElement {
   ];
 
   @state()
-  roomId?: string = undefined;
-
-  @state()
   private _auth = false;
 
   @state()
@@ -100,14 +97,17 @@ export class MyHome extends LitElement {
 
   @state()
   private _user: {
-    photoURL: string;
-    email: string;
-    displayName: string;
     uid: string;
   };
 
   @state()
   rooms: Room[] = [];
+
+  @property({ type: Boolean })
+  public isModalOpen = false;
+
+  @property({ type: String })
+  public roomId = '';
 
   createRoomBtnRef: Ref<HTMLButtonElement> = createRef();
 
@@ -115,16 +115,23 @@ export class MyHome extends LitElement {
     super();
 
     this._user = {
-      photoURL: '',
-      email: '',
-      displayName: '',
       uid: '',
     };
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+  }
+
+  sendRoomId(e: CustomEvent): void {
+    this.roomId = e.detail;
   }
 
   connectedCallback(): void {
     super.connectedCallback();
     const auth = getAuth();
+    this.addEventListener('modal-closed', this.closeModal);
+    this.addEventListener('send-room-id', this.sendRoomId);
     const socket = io();
     socket.on('delete-room', (roomId) => {
       alert(`방이 삭제됨, ${roomId}`);
@@ -134,15 +141,9 @@ export class MyHome extends LitElement {
       if (user) {
         this._auth = true;
         this._user.uid = user.uid;
-        this._user.email = user.email;
-        this._user.displayName = user.displayName;
-        this._user.photoURL = user.photoURL;
       } else {
         this._auth = false;
         this._user.uid = '';
-        this._user.email = '';
-        this._user.displayName = '';
-        this._user.photoURL = '';
       }
     });
 
@@ -155,6 +156,12 @@ export class MyHome extends LitElement {
       ) as Room[];
       this._isInitial = false;
     });
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.removeEventListener('modal-closed', this.closeModal);
+    this.removeEventListener('send-room-id', this.sendRoomId);
   }
 
   _checkIsNewRoomOK(): Promise<boolean> {
@@ -192,64 +199,36 @@ export class MyHome extends LitElement {
     });
   }
 
-  _sendNewRoomInfo(roomId: string): Promise<void> {
-    const database = getDatabase();
-    return set(dbRef(database, 'rooms/' + roomId), {
-      id: roomId,
-      created_at: dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
-      expires_at: dayjs(new Date())
-        .add(3, 'minutes')
-        .format('YYYY-MM-DDTHH:mm:ss'),
-      members: {
-        host: {
-          uid: this._user.uid,
-          email: this._user.email,
-          display_name: this._user.displayName,
-          photo_url: this._user.photoURL,
-          connection: {
-            is_connected: false,
-            connected_at: '',
-            disconnected_at: '',
-          },
-        },
-        guest: {
-          uid: '',
-          email: '',
-          display_name: '',
-          photo_url: '',
-          connection: {
-            is_connected: false,
-            connected_at: '',
-            disconnected_at: '',
-          },
-        },
-      },
-    });
-  }
-
-  async createRoom(): Promise<void> {
+  async readyRoom(): Promise<void> {
     try {
       await this._checkIsNewRoomOK();
       await this._checkAlreadyMyRoom();
-
-      const newRoomId = uuidv4();
-      await this._sendNewRoomInfo(newRoomId);
-      this.roomId = newRoomId;
-      const createRoomBtn = this.createRoomBtnRef.value;
-      createRoomBtn.disabled = true;
+      this.isModalOpen = !this.isModalOpen;
     } catch (e) {
       alert(e.message);
     }
   }
 
+  attributeChangedCallback(
+    name: string,
+    _old: string | null,
+    value: string | null,
+  ): void {
+    console.log(name, _old, value);
+    super.attributeChangedCallback(name, _old, value);
+  }
+
+  // const createRoomBtn = this.createRoomBtnRef.value;
+  // createRoomBtn.disabled = true;
+
   renderInitial(): TemplateResult {
-    return html`<room-skeleton></room-skeleton>`;
+    return html` <room-skeleton></room-skeleton>`;
   }
 
   renderRoom(room: Room): TemplateResult {
-    return html`<room-card
-      .room=${room}
-      ?myRoomEnabled=${this._user.uid === room.members.host.uid}
+    return html` <room-card
+      .room="${room}"
+      ?myRoomEnabled="${this._user.uid === room.members.host.uid}"
     ></room-card>`;
   }
 
@@ -270,7 +249,7 @@ export class MyHome extends LitElement {
                 <button
                   class="create__btn"
                   ${ref(this.createRoomBtnRef)}
-                  @click="${this.createRoom}"
+                  @click="${this.readyRoom}"
                 >
                   <span class="icon material-icons-outlined"> add_task </span>
                   <span>방 만들기</span>
@@ -301,6 +280,7 @@ export class MyHome extends LitElement {
     ? Array.from({ length: 3 }).map(() => this.renderInitial())
     : this.rooms.map((r: Room) => this.renderRoom(r))}
         </div>
+        <pw-modal ?isOpen=${this.isModalOpen}></pw-modal>
       </main>
       <main-footer></main-footer>
     `;

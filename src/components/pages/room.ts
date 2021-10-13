@@ -138,7 +138,7 @@ export class RoomCard extends LitElement {
       </div>
       <div class="room__time">
         <p>
-          종료시각: ${dayjs(this.room.expires_at).format('YYYY.MM.YY HH.mm')}
+          종료시각: ${dayjs(this.room.expires_at).format('YYYY.MM.DD HH.mm')}
         </p>
       </div>
     </div>`;

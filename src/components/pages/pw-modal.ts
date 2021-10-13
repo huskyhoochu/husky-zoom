@@ -92,6 +92,10 @@ export class PwModal extends LitElement {
         background-color: var(--indigo-500);
         color: white;
       }
+
+      .form__button-group button[type='submit'].loading {
+        opacity: 0.5;
+      }
     `,
   ];
 
@@ -102,6 +106,9 @@ export class PwModal extends LitElement {
     displayName: '',
     photoURL: '',
   };
+
+  @state()
+  private _isLoading = false;
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -125,6 +132,7 @@ export class PwModal extends LitElement {
   public isOpen = false;
 
   public async _createRoom(e: SubmitEvent): Promise<void> {
+    this._isLoading = true;
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const body = {
@@ -150,6 +158,8 @@ export class PwModal extends LitElement {
       }
     } catch (e) {
       console.log(e.message);
+    } finally {
+      this._isLoading = false;
     }
   }
 
@@ -166,6 +176,10 @@ export class PwModal extends LitElement {
   protected render(): TemplateResult {
     const openClasses = {
       active: this.isOpen,
+    };
+
+    const loadingClasses = {
+      loading: this._isLoading,
     };
 
     return html`
@@ -188,7 +202,13 @@ export class PwModal extends LitElement {
             </label>
             <div class="form__button-group">
               <button @click="${this._toggleModal}" type="reset">취소</button>
-              <button type="submit">확인</button>
+              <button
+                type="submit"
+                class="${classMap(loadingClasses)}"
+                ?disabled=${this._isLoading}
+              >
+                ${this._isLoading ? '처리 중...' : '확인'}
+              </button>
             </div>
           </form>
         </div>

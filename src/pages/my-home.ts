@@ -56,8 +56,13 @@ export class MyHome extends LitElement {
         display: inline-block;
       }
 
-      .create__link p {
-        margin-bottom: 8px;
+      .create__link a {
+        display: block;
+        margin: 8px 0;
+      }
+
+      .description {
+        font-size: var(--font-xs);
       }
 
       .create__btn {
@@ -270,6 +275,10 @@ export class MyHome extends LitElement {
                   <a href="/room/ready/${ifDefined(this.roomId)}"
                     >${window.location.origin + '/room/ready/' + this.roomId}</a
                   >
+                  <p class="description">
+                    위의 링크를 누르거나 목록에 새로 만들어진 방 버튼을
+                    누르세요.
+                  </p>
                 </div>
               `
     : ''}

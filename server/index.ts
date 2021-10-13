@@ -70,6 +70,7 @@ app.get('*', (req: Request, res: Response) => {
 });
 
 app.post('/room', async (req: Request, res: Response) => {
+  console.log('방 제작 시작...');
   const { password, uid, email, display_name, photo_url } = req.body;
 
   try {

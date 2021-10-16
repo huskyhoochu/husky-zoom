@@ -111,6 +111,7 @@ export class PwModal extends LitElement {
         const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
           detail: {
             intent: 'success',
+            title: '방 링크 생성',
             message: `${room_id} 방이 생성되었습니다`,
           },
           bubbles: true,
@@ -121,7 +122,18 @@ export class PwModal extends LitElement {
         this.isOpen = false;
       }
     } catch (e) {
-      alert(e.message);
+      const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
+        detail: {
+          intent: 'danger',
+          title: '방 생성 오류',
+          message: e.message,
+        },
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+      });
+      this.dispatchEvent(toastEvent);
+      this.isOpen = false;
     } finally {
       this._isLoading = false;
     }

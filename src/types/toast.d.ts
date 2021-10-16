@@ -1,5 +1,6 @@
 declare interface ToastEvent {
   intent: 'danger' | 'success';
+  title: string;
   message: string;
 }
 

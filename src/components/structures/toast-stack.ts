@@ -1,10 +1,9 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { animate, fadeOut, fadeIn } from '@lit-labs/motion';
+import { animate, fadeIn, fadeOut } from '@lit-labs/motion';
 import { baseStyles, normalizeCSS } from '../../styles/elements';
 
-import './toast';
 import { classMap } from 'lit/directives/class-map.js';
 
 @customElement('toast-stack')
@@ -44,6 +43,24 @@ export class ToastStack extends LitElement {
         background-color: var(--red-50);
         color: var(--red-400);
       }
+
+      .toast__title {
+        display: flex;
+        align-items: center;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: inherit;
+        padding-bottom: 6px;
+        margin-bottom: 10px;
+      }
+
+      .toast__title .icon {
+        font-family: 'Material Icons', serif;
+        font-style: normal;
+        font-size: var(--font-2xl);
+        display: inline-block;
+        margin-right: 4px;
+      }
     `,
   ];
 
@@ -67,7 +84,8 @@ export class ToastStack extends LitElement {
     const newItem: ToastMessage = {
       id: this._id,
       intent: e.detail.intent,
-      message: `${this._id} ${e.detail.message}`,
+      title: e.detail.title,
+      message: e.detail.message,
     };
     this._messages = [newItem, ...this._messages];
     this._id += 1;
@@ -111,6 +129,20 @@ export class ToastStack extends LitElement {
     stabilizeOut: true,
   })}
               >
+                <div class="toast__title">
+                  ${item.intent === 'success'
+    ? html`
+                        <span class="icon material-icons-outlined">
+                          check_circle_outline
+                        </span>
+                      `
+    : html`
+                        <span class="icon material-icons-outlined">
+                          error_outline
+                        </span>
+                      `}
+                  <h3>${item.title}</h3>
+                </div>
                 <p>${item.message}</p>
               </div>
             `;

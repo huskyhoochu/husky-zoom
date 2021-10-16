@@ -8,8 +8,6 @@ import './pages/my-home';
 import './pages/room-ready';
 import './pages/sign-in';
 
-import './components/structures/toast';
-
 const firebaseConfig = {
   apiKey: import.meta.env.SNOWPACK_PUBLIC_API_KEY,
   authDomain: import.meta.env.SNOWPACK_PUBLIC_AUTH_DOMAIN,

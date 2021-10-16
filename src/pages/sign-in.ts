@@ -6,6 +6,7 @@ import { Router } from '@vaadin/router';
 import '../components/structures/header';
 import '../components/structures/footer';
 import '../components/structures/footer';
+import '../components/structures/toast-stack';
 import { baseStyles, normalizeCSS } from '../styles/elements';
 
 @customElement('sign-in')
@@ -20,17 +21,17 @@ export class SignIn extends LitElement {
         Router.go('/');
       })
       .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        console.log(errorCode);
-        console.log(errorMessage);
-        console.log(email);
-        console.log(credential);
+        const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
+          detail: {
+            intent: 'danger',
+            title: '로그인 오류',
+            message: error.message,
+          },
+          bubbles: true,
+          composed: true,
+          cancelable: true,
+        });
+        this.dispatchEvent(toastEvent);
       });
   }
 
@@ -41,6 +42,7 @@ export class SignIn extends LitElement {
         <button @click="${this._callPopup}">로그인</button>
       </main>
       <main-footer></main-footer>
+      <toast-stack></toast-stack>
     `;
   }
 }

@@ -144,11 +144,20 @@ export class MainHeader extends LitElement {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
-        alert('로그아웃 되었습니다');
         Router.go('/');
       })
       .catch((error) => {
-        console.log(error);
+        const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
+          detail: {
+            intent: 'danger',
+            title: '로그아웃 오류',
+            message: error.message,
+          },
+          bubbles: true,
+          composed: true,
+          cancelable: true,
+        });
+        this.dispatchEvent(toastEvent);
       });
   }
 

@@ -4,7 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { createRef, ref, Ref } from 'lit/directives/ref.js';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, onValue, ref as dbRef } from 'firebase/database';
-// import { io } from 'socket.io-client';
+import { io } from 'socket.io-client';
 import dayjs from 'dayjs';
 
 import '../components/structures/header';
@@ -140,10 +140,20 @@ export class MyHome extends LitElement {
     const auth = getAuth();
     this.addEventListener('modal-closed', this._closeModal);
     this.addEventListener('send-room-id', this._sendRoomId);
-    // const socket = io();
-    // socket.on('delete-room', (roomId) => {
-    //   alert(`방이 삭제됨, ${roomId}`);
-    // });
+    const socket = io();
+    socket.on('delete-room', (roomId) => {
+      const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
+        detail: {
+          intent: 'success',
+          title: '방 기한 만료',
+          message: `${roomId} 방이 삭제되었습니다`,
+        },
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+      });
+      this.dispatchEvent(toastEvent);
+    });
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -213,7 +223,17 @@ export class MyHome extends LitElement {
       await this._checkAlreadyMyRoom();
       this.isModalOpen = !this.isModalOpen;
     } catch (e) {
-      alert(e.message);
+      const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
+        detail: {
+          intent: 'danger',
+          title: '방 생성 오류',
+          message: e.message,
+        },
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+      });
+      this.dispatchEvent(toastEvent);
     }
   }
 

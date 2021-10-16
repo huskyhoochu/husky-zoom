@@ -12,9 +12,7 @@ export class Toast extends LitElement {
         width: 100px;
         height: 100px;
         background-color: green;
-        position: fixed;
-        bottom: 0;
-        right: 0;
+        position: relative;
       }
     `,
   ];
@@ -24,11 +22,5 @@ export class Toast extends LitElement {
 
   protected render(): TemplateResult {
     return html` <div class="toast">${this.message}</div> `;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'global-toast': Toast;
   }
 }

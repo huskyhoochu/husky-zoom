@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 
 import '../components/structures/header';
 import '../components/structures/footer';
+import '../components/structures/toast-stack';
 import '../components/pages/my-home/room';
 import '../components/pages/my-home/skeleton';
 import '../components/pages/my-home/pw-modal';
@@ -166,9 +167,9 @@ export class MyHome extends LitElement {
   }
 
   disconnectedCallback(): void {
-    super.disconnectedCallback();
     this.removeEventListener('modal-closed', this._closeModal);
     this.removeEventListener('send-room-id', this._sendRoomId);
+    super.disconnectedCallback();
   }
 
   _checkIsNewRoomOK(): Promise<boolean> {
@@ -282,6 +283,7 @@ export class MyHome extends LitElement {
         <pw-modal ?isOpen=${this.isModalOpen}></pw-modal>
       </main>
       <main-footer></main-footer>
+      <toast-stack></toast-stack>
     `;
   }
 }

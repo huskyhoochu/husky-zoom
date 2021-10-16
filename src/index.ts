@@ -32,14 +32,6 @@ router.setRoutes([
   { path: '/auth/login', component: 'sign-in' },
 ]);
 
-window.onload = function () {
-  window.addEventListener('add-toast', addToast);
-};
-
-window.onunload = function () {
-  window.removeEventListener('add-toast', addToast);
-};
-
 declare global {
   interface ImportMeta {
     env: any;

@@ -3,8 +3,6 @@ import { customElement, property } from 'lit/decorators.js';
 import { baseStyles, normalizeCSS } from '../../../styles/elements';
 
 import '../../structures/modal';
-import { Router } from '@vaadin/router';
-
 @customElement('pw-compare-modal')
 export class PwCompareModal extends LitElement {
   static styles = [normalizeCSS, baseStyles, css``];
@@ -14,7 +12,7 @@ export class PwCompareModal extends LitElement {
 
   @property({ type: Function })
   public onCancelCallback(): void {
-    Router.go('/');
+    window.location.assign('/');
   }
 
   protected render(): TemplateResult {

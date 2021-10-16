@@ -170,7 +170,7 @@ export class MyHome extends LitElement {
     onValue(roomsRef, (snapshot) => {
       this.rooms = Object.values(snapshot.val() || {}).sort(
         (a: Room, b: Room) =>
-          dayjs(a.created_at).unix() - dayjs(b.created_at).unix(),
+          dayjs(b.created_at).unix() - dayjs(a.created_at).unix(),
       ) as Room[];
       this._isInitial = false;
     });

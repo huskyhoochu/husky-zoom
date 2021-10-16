@@ -168,10 +168,22 @@ export class MyHome extends LitElement {
     const database = getDatabase();
     const roomsRef = dbRef(database, 'rooms');
     onValue(roomsRef, (snapshot) => {
-      this.rooms = Object.values(snapshot.val() || {}).sort(
+      let snapshotRooms = Object.values(snapshot.val() || {}).sort(
         (a: Room, b: Room) =>
           dayjs(b.created_at).unix() - dayjs(a.created_at).unix(),
       ) as Room[];
+
+      const myRoom = snapshotRooms.find(
+        (room) => room.members.host.uid === this._user.uid,
+      );
+
+      if (myRoom) {
+        snapshotRooms = snapshotRooms.filter(
+          (room) => room.members.host.uid !== this._user.uid,
+        );
+        snapshotRooms = [myRoom, ...snapshotRooms];
+      }
+      this.rooms = snapshotRooms;
       this._isInitial = false;
     });
   }

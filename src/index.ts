@@ -5,6 +5,7 @@ import 'normalize.css';
 import './styles/base.css';
 
 import './pages/my-home';
+import './pages/room-ready';
 import './pages/sign-in';
 
 const firebaseConfig = {
@@ -21,9 +22,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
-const router = new Router(document.getElementById('outlet'));
+export const router = new Router(document.getElementById('outlet'));
 router.setRoutes([
   { path: '/', component: 'my-home' },
+  { path: '/room/ready/:id', component: 'room-ready' },
   { path: '/auth/login', component: 'sign-in' },
 ]);
 

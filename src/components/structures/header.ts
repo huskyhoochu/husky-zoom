@@ -159,7 +159,6 @@ export class MainHeader extends LitElement {
   protected render(): TemplateResult<1> {
     const classes = {
       active: this._dropdownEnabled,
-      hidden: true,
     };
     return html`
       <header>

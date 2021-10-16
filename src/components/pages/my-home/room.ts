@@ -1,7 +1,7 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { baseStyles, normalizeCSS } from '../../styles/elements';
+import { baseStyles, normalizeCSS } from '../../../styles/elements';
 import dayjs from 'dayjs';
 
 @customElement('room-card')
@@ -11,6 +11,7 @@ export class RoomCard extends LitElement {
     baseStyles,
     css`
       .room {
+        display: block;
         background-color: var(--gray-100);
         border-radius: var(--border-radius-lg);
         padding: 12px 16px;
@@ -116,13 +117,14 @@ export class RoomCard extends LitElement {
   protected render(): TemplateResult {
     const hostClasses = {
       conn__active: this._hostConnStateEnabled,
-      hidden: false,
     };
     const myRoomClasses = {
       room__active: this.myRoomEnabled,
-      hidden: false,
     };
-    return html` <div class="room ${classMap(myRoomClasses)}">
+    return html` <a
+      href="/room/ready/${this.room.id}"
+      class="room ${classMap(myRoomClasses)}"
+    >
       <p class="room__badge">${this.room.id}</p>
       <div class="room__member">
         <div class="host">
@@ -141,6 +143,6 @@ export class RoomCard extends LitElement {
           종료시각: ${dayjs(this.room.expires_at).format('YYYY.MM.DD HH.mm')}
         </p>
       </div>
-    </div>`;
+    </a>`;
   }
 }

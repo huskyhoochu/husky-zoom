@@ -4,14 +4,14 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { createRef, ref, Ref } from 'lit/directives/ref.js';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, onValue, ref as dbRef } from 'firebase/database';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 import dayjs from 'dayjs';
 
 import '../components/structures/header';
 import '../components/structures/footer';
-import '../components/pages/room';
-import '../components/pages/skeleton';
-import '../components/pages/pw-modal';
+import '../components/pages/my-home/room';
+import '../components/pages/my-home/skeleton';
+import '../components/pages/my-home/pw-modal';
 import { baseStyles, normalizeCSS } from '../styles/elements';
 
 @customElement('my-home')
@@ -124,23 +124,25 @@ export class MyHome extends LitElement {
     };
   }
 
-  closeModal(): void {
+  private _closeModal(): void {
     this.isModalOpen = false;
   }
 
-  sendRoomId(e: CustomEvent): void {
+  private _sendRoomId(e: CustomEvent): void {
     this.roomId = e.detail;
+    const createRoomBtn = this.createRoomBtnRef.value;
+    createRoomBtn.disabled = true;
   }
 
   connectedCallback(): void {
     super.connectedCallback();
     const auth = getAuth();
-    this.addEventListener('modal-closed', this.closeModal);
-    this.addEventListener('send-room-id', this.sendRoomId);
-    const socket = io();
-    socket.on('delete-room', (roomId) => {
-      alert(`방이 삭제됨, ${roomId}`);
-    });
+    this.addEventListener('modal-closed', this._closeModal);
+    this.addEventListener('send-room-id', this._sendRoomId);
+    // const socket = io();
+    // socket.on('delete-room', (roomId) => {
+    //   alert(`방이 삭제됨, ${roomId}`);
+    // });
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -165,8 +167,8 @@ export class MyHome extends LitElement {
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.removeEventListener('modal-closed', this.closeModal);
-    this.removeEventListener('send-room-id', this.sendRoomId);
+    this.removeEventListener('modal-closed', this._closeModal);
+    this.removeEventListener('send-room-id', this._sendRoomId);
   }
 
   _checkIsNewRoomOK(): Promise<boolean> {
@@ -222,9 +224,6 @@ export class MyHome extends LitElement {
     console.log(name, _old, value);
     super.attributeChangedCallback(name, _old, value);
   }
-
-  // const createRoomBtn = this.createRoomBtnRef.value;
-  // createRoomBtn.disabled = true;
 
   renderInitial(): TemplateResult {
     return html` <room-skeleton></room-skeleton>`;

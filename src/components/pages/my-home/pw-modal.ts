@@ -1,9 +1,11 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { baseStyles, normalizeCSS } from '../../styles/elements';
-import Fetcher from '../../fetcher';
+import { baseStyles, normalizeCSS } from '../../../styles/elements';
+import Fetcher from '../../../fetcher';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
+import '../../structures/modal';
 
 @customElement('pw-modal')
 export class PwModal extends LitElement {
@@ -11,54 +13,6 @@ export class PwModal extends LitElement {
     normalizeCSS,
     baseStyles,
     css`
-      .modal__background {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(17, 24, 39, 0.5);
-        width: 100vw;
-        height: 100vh;
-        align-items: center;
-        justify-content: center;
-        display: none;
-      }
-
-      .modal__body {
-        background-color: white;
-        width: 300px;
-        height: 200px;
-        border-radius: 8px;
-        padding: 16px;
-        box-shadow: var(--shadow-lg);
-      }
-
-      .header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .icon {
-        font-family: 'Material Icons', serif;
-        font-style: normal;
-        font-size: var(--font-2xl);
-      }
-
-      .close__btn {
-        background-color: transparent;
-        outline: none;
-      }
-
-      .close__btn:hover {
-        outline: none;
-      }
-
-      .active {
-        display: flex;
-      }
-
       .form {
         display: block;
         margin: 16px 0;
@@ -110,6 +64,9 @@ export class PwModal extends LitElement {
   @state()
   private _isLoading = false;
 
+  @property({ type: Boolean })
+  public isOpen = false;
+
   connectedCallback(): void {
     super.connectedCallback();
     const auth = getAuth();
@@ -127,9 +84,6 @@ export class PwModal extends LitElement {
       }
     });
   }
-
-  @property({ type: Boolean })
-  public isOpen = false;
 
   public async _createRoom(e: SubmitEvent): Promise<void> {
     this._isLoading = true;
@@ -157,7 +111,7 @@ export class PwModal extends LitElement {
         this.isOpen = false;
       }
     } catch (e) {
-      console.log(e.message);
+      alert(e.message);
     } finally {
       this._isLoading = false;
     }
@@ -174,45 +128,29 @@ export class PwModal extends LitElement {
   }
 
   protected render(): TemplateResult {
-    const openClasses = {
-      active: this.isOpen,
-    };
-
     const loadingClasses = {
       loading: this._isLoading,
     };
 
     return html`
-      <div class="modal__background ${classMap(openClasses)}">
-        <div class="modal__body">
-          <div class="header">
-            <h3>비밀번호 작성</h3>
+      <main-modal title="비밀번호 생성" ?isOpen=${this.isOpen}>
+        <form class="form" @submit="${this._createRoom}">
+          <label for="password">
+            <p>8자 이상 입력하세요</p>
+            <input id="password" type="password" name="password" />
+          </label>
+          <div class="form__button-group">
+            <button @click="${this._toggleModal}" type="reset">취소</button>
             <button
-              class="close__btn"
-              type="button"
-              @click="${this._toggleModal}"
+              type="submit"
+              class="${classMap(loadingClasses)}"
+              ?disabled=${this._isLoading}
             >
-              <span class="icon material-icons-outlined"> close </span>
+              ${this._isLoading ? '처리 중...' : '확인'}
             </button>
           </div>
-          <form class="form" @submit="${this._createRoom}">
-            <label for="password">
-              <p>8자 이상 입력하세요</p>
-              <input id="password" type="password" name="password" />
-            </label>
-            <div class="form__button-group">
-              <button @click="${this._toggleModal}" type="reset">취소</button>
-              <button
-                type="submit"
-                class="${classMap(loadingClasses)}"
-                ?disabled=${this._isLoading}
-              >
-                ${this._isLoading ? '처리 중...' : '확인'}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+        </form>
+      </main-modal>
     `;
   }
 }

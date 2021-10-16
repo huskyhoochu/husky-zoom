@@ -9,7 +9,6 @@ import './pages/room-ready';
 import './pages/sign-in';
 
 import './components/structures/toast';
-import addToast from './events/toast';
 
 const firebaseConfig = {
   apiKey: import.meta.env.SNOWPACK_PUBLIC_API_KEY,

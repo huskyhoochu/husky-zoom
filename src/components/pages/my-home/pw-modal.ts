@@ -108,8 +108,11 @@ export class PwModal extends LitElement {
           cancelable: true,
         });
         this.dispatchEvent(sendRoomEvent);
-        const toastEvent = new CustomEvent('add-toast', {
-          detail: `${room_id} 방이 생성되었습니다`,
+        const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
+          detail: {
+            intent: 'success',
+            message: `${room_id} 방이 생성되었습니다`,
+          },
           bubbles: true,
           composed: true,
           cancelable: true,

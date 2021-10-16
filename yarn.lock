@@ -539,6 +539,13 @@
   resolved "https://registry.yarnpkg.com/@isaacs/string-locale-compare/-/string-locale-compare-1.1.0.tgz#291c227e93fd407a96ecd59879a35809120e432b"
   integrity sha512-SQ7Kzhh9+D+ZW9MA0zkYv3VXhIDNx+LzM6EJ+/65I3QY+enU6Itte7E5XX7EWrqLW2FN4n06GWzBnPoC3th2aQ==
 
+"@lit-labs/motion@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@lit-labs/motion/-/motion-1.0.1.tgz#1dce0b2978fa1d2b1e89c3f711034e077f0f0973"
+  integrity sha512-n7vf2soBysayiqQ5ufFCBxvoG7vAaiqPV6Dj5hdHyKvzxxykx/uZ7nSazA4l/AjlrU2UQUg/SA8+wJmLQsKZ8Q==
+  dependencies:
+    lit "^2.0.0"
+
 "@lit/reactive-element@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@lit/reactive-element/-/reactive-element-1.0.1.tgz#853cacd4d78d79059f33f66f8e7b0e5c34bee294"
@@ -3899,7 +3906,7 @@ lit-html@^2.0.0:
   dependencies:
     "@types/trusted-types" "^2.0.2"
 
-lit@^2.0.2:
+lit@^2.0.0, lit@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/lit/-/lit-2.0.2.tgz#5e6f422924e0732258629fb379556b6d23f7179c"
   integrity sha512-hKA/1YaSB+P+DvKWuR2q1Xzy/iayhNrJ3aveD0OQ9CKn6wUjsdnF/7LavDOJsKP/K5jzW/kXsuduPgRvTFrFJw==

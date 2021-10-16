@@ -216,15 +216,6 @@ export class MyHome extends LitElement {
     }
   }
 
-  attributeChangedCallback(
-    name: string,
-    _old: string | null,
-    value: string | null,
-  ): void {
-    console.log(name, _old, value);
-    super.attributeChangedCallback(name, _old, value);
-  }
-
   renderInitial(): TemplateResult {
     return html` <room-skeleton></room-skeleton>`;
   }

@@ -5,6 +5,7 @@ import { Router } from '@vaadin/router';
 
 import '../components/structures/header';
 import '../components/structures/footer';
+import '../components/structures/footer';
 import { baseStyles, normalizeCSS } from '../styles/elements';
 
 @customElement('sign-in')
@@ -39,6 +40,7 @@ export class SignIn extends LitElement {
       <main>
         <button @click="${this._callPopup}">로그인</button>
       </main>
+      <main-footer></main-footer>
     `;
   }
 }

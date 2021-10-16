@@ -101,13 +101,20 @@ export class PwModal extends LitElement {
       const resp = await Fetcher.axios.post('/room', body);
       const { okay, room_id } = resp.data as { okay: boolean; room_id: string };
       if (okay) {
-        const event = new CustomEvent('send-room-id', {
+        const sendRoomEvent = new CustomEvent('send-room-id', {
           detail: room_id,
           bubbles: true,
           composed: true,
           cancelable: true,
         });
-        this.dispatchEvent(event);
+        this.dispatchEvent(sendRoomEvent);
+        const toastEvent = new CustomEvent('add-toast', {
+          detail: `${room_id} 방이 생성되었습니다`,
+          bubbles: true,
+          composed: true,
+          cancelable: true,
+        });
+        this.dispatchEvent(toastEvent);
         this.isOpen = false;
       }
     } catch (e) {

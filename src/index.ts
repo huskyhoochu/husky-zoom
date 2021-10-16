@@ -8,6 +8,9 @@ import './pages/my-home';
 import './pages/room-ready';
 import './pages/sign-in';
 
+import './components/structures/toast';
+import addToast from './events/toast';
+
 const firebaseConfig = {
   apiKey: import.meta.env.SNOWPACK_PUBLIC_API_KEY,
   authDomain: import.meta.env.SNOWPACK_PUBLIC_AUTH_DOMAIN,
@@ -28,6 +31,14 @@ router.setRoutes([
   { path: '/room/ready/:id', component: 'room-ready' },
   { path: '/auth/login', component: 'sign-in' },
 ]);
+
+window.onload = function () {
+  window.addEventListener('add-toast', addToast);
+};
+
+window.onunload = function () {
+  window.removeEventListener('add-toast', addToast);
+};
 
 declare global {
   interface ImportMeta {

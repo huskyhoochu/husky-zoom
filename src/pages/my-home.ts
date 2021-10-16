@@ -1,9 +1,10 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { repeat } from 'lit/directives/repeat.js';
 import { createRef, ref, Ref } from 'lit/directives/ref.js';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase, onValue, ref as dbRef } from 'firebase/database';
+import { getDatabase, onValue, ref as dbRef, get } from 'firebase/database';
 import { io } from 'socket.io-client';
 import dayjs from 'dayjs';
 
@@ -194,39 +195,31 @@ export class MyHome extends LitElement {
     super.disconnectedCallback();
   }
 
-  _checkIsNewRoomOK(): Promise<boolean> {
+  async _checkIsNewRoomOK(): Promise<boolean> {
     const database = getDatabase();
     const roomsRef = dbRef(database, 'rooms');
-    return new Promise<boolean>((resolve, reject) => {
-      onValue(roomsRef, (snapshot) => {
-        const rooms = snapshot.val() || {};
-        if (Object.keys(rooms).length > 11) {
-          reject(
-            new Error('방 생성 제한 갯수가 가득 찼습니다. 다음에 만들어주세요'),
-          );
-        } else {
-          resolve(true);
-        }
-      });
-    });
+    const snapshot = await get(roomsRef);
+    const rooms = Object.values(snapshot.val() || {}) as Room[];
+    if (rooms.length > 11) {
+      throw new Error('방 생성 제한 갯수가 가득 찼습니다. 다음에 만들어주세요');
+    } else {
+      return true;
+    }
   }
 
-  _checkAlreadyMyRoom(): Promise<boolean> {
+  async _checkAlreadyMyRoom(): Promise<boolean> {
     const database = getDatabase();
     const roomsRef = dbRef(database, 'rooms');
-    return new Promise<boolean>((resolve, reject) => {
-      onValue(roomsRef, (snapshot) => {
-        const rooms = Object.values(snapshot.val() || {}) as Room[];
-        const myRoom = rooms.find(
-          (room) => this._user.uid === room.members.host.uid,
-        );
-        if (myRoom) {
-          reject(new Error('이미 방을 개설하셨습니다.'));
-        } else {
-          resolve(true);
-        }
-      });
-    });
+    const snapshot = await get(roomsRef);
+    const rooms = Object.values(snapshot.val() || {}) as Room[];
+    const myRoom = rooms.find(
+      (room) => this._user.uid === room.members.host.uid,
+    );
+    if (myRoom) {
+      throw new Error('이미 방을 개설하셨습니다.');
+    } else {
+      return true;
+    }
   }
 
   async readyRoom(): Promise<void> {
@@ -310,7 +303,11 @@ export class MyHome extends LitElement {
         <div class="room-wrapper">
           ${this._isInitial
     ? Array.from({ length: 3 }).map(() => this.renderInitial())
-    : this.rooms.map((r: Room) => this.renderRoom(r))}
+    : repeat(
+      this.rooms,
+      (room) => room.id,
+      (room) => this.renderRoom(room),
+    )}
         </div>
         <pw-modal ?isOpen=${this.isModalOpen}></pw-modal>
       </main>

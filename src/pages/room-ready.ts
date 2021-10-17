@@ -20,6 +20,8 @@ import {
 } from 'firebase/database';
 import { ref as dbRef } from '@firebase/database';
 import { initRoom } from '@config/room';
+import parseErrMsg from '@fetcher/parseErrMsg';
+import Fetcher from '@fetcher/index';
 
 @customElement('room-ready')
 export class RoomReady extends LitElement {
@@ -97,10 +99,17 @@ export class RoomReady extends LitElement {
         margin: 32px auto;
       }
 
+      .hint {
+        color: var(--gray-500);
+        font-size: var(--font-xs);
+        font-weight: 700;
+      }
+
       .button-group {
         display: grid;
         grid: auto-flow / 50% 50%;
         grid-column-gap: 8px;
+        margin: 16px 0;
       }
 
       .button-group button {
@@ -196,6 +205,29 @@ export class RoomReady extends LitElement {
     await this.changeConnectionStatus('disconnected');
   };
 
+  private async onEnterRoom(): Promise<void> {
+    try {
+      const resp = await Fetcher.axios.post('/room/jwt');
+      const { okay, token } = resp.data as { okay: boolean; token: string };
+      if (okay) {
+        Router.go(`/room/start?token=${token}`);
+      }
+    } catch (e) {
+      const message = parseErrMsg(e);
+      const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
+        detail: {
+          intent: 'danger',
+          title: '입장 오류',
+          message,
+        },
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+      });
+      this.dispatchEvent(toastEvent);
+    }
+  }
+
   protected render(): TemplateResult {
     return html`
       <main-header></main-header>
@@ -220,11 +252,17 @@ export class RoomReady extends LitElement {
             <p class="status">현재 참여 중인 인원</p>
             <div class="dashboard">
               <room-member .room="${this._room}"></room-member>
+              <p class="hint">
+                채팅하기로 한 파트너가 맞는지 확인하셨으면 입장하기를
+                눌러주세요.
+              </p>
               <div class="button-group">
                 <button type="reset" @click="${() => Router.go('/')}">
                   나가기
                 </button>
-                <button type="submit">입장하기</button>
+                <button type="submit" @click="${this.onEnterRoom}">
+                  입장하기
+                </button>
               </div>
             </div>
           </div>

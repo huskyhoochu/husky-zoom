@@ -69,13 +69,13 @@ export class ToastStack extends LitElement {
 
   private _id = this._messages.length;
 
-  private _removeMsgTimeout = (item: ToastMessage): Promise<NodeJS.Timeout> => {
-    return Promise.resolve(
-      setTimeout(() => {
-        const swallowArr = [...this._messages];
-        this._messages = swallowArr.filter((msg) => msg.id !== item.id);
-      }, 1000 * 5),
-    );
+  private _removeMsgTimeout = (item: ToastMessage): Promise<void> => {
+    const timeout = setTimeout(() => {
+      const swallowArr = [...this._messages];
+      this._messages = swallowArr.filter((msg) => msg.id !== item.id);
+      clearTimeout(timeout);
+    }, 1000 * 5);
+    return Promise.resolve();
   };
 
   private _addToastEvent = async (

@@ -12,6 +12,7 @@
     "baseUrl": "src",
     "paths": {
       "@components/*": ["components/*"],
+      "@config/*": ["config/*"],
       "@fetcher/*": ["fetcher/*"],
       "@pages/*": ["pages/*"],
       "@styles/*": ["styles/*"],

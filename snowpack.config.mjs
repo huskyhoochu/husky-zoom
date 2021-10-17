@@ -24,6 +24,7 @@ export default {
   },
   alias: {
     '@components': './src/components',
+    '@config': './src/config',
     '@fetcher': './src/fetcher',
     '@pages': './src/pages',
     '@styles': './src/styles',

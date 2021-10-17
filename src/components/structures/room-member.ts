@@ -79,11 +79,21 @@ export class RoomMember extends LitElement {
     return html`
       <div class="room__member">
         <div class="member">
-          <img
-            class="member__img"
-            src=${this.room.members.host.photo_url}
-            alt=${this.room.members.host.display_name}
-          />
+          ${this.room.members.host.uid
+    ? html`
+                <img
+                  class="member__img"
+                  src=${this.room.members.host.photo_url}
+                  alt=${this.room.members.host.display_name}
+                />
+              `
+    : html`
+                <div class="member__img">
+                  <span class="icon material-icons-outlined">
+                    account_circle
+                  </span>
+                </div>
+              `}
           <div class="conn">
             <span class="conn__status ${classMap(hostClasses)}"></span>
           </div>

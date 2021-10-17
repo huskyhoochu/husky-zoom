@@ -189,12 +189,6 @@ export class MyHome extends LitElement {
     });
   }
 
-  disconnectedCallback(): void {
-    this.removeEventListener('modal-closed', this._closeModal);
-    this.removeEventListener('send-room-id', this._sendRoomId);
-    super.disconnectedCallback();
-  }
-
   async _checkIsNewRoomOK(): Promise<boolean> {
     const database = getDatabase();
     const roomsRef = dbRef(database, 'rooms');

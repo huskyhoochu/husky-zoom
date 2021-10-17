@@ -137,11 +137,14 @@ export class RoomReady extends LitElement {
       this._room = snapshot.val() as Room;
     });
     this.addEventListener('open-video', this.openLocalVideo);
+    window.addEventListener('beforeunload', async (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      await this.changeConnectionStatus('disconnected');
+    });
   }
 
   disconnectedCallback(): void {
     this.changeConnectionStatus('disconnected').finally(() => {
-      this.removeEventListener('open-video', this.openLocalVideo);
       super.disconnectedCallback();
     });
   }

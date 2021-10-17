@@ -2,7 +2,7 @@ import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import { baseStyles, normalizeCSS } from '../../styles/elements';
+import { baseStyles, normalizeCSS } from '@styles/elements';
 import { Router } from '@vaadin/router';
 
 @customElement('main-header')

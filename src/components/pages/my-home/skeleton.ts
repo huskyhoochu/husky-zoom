@@ -1,6 +1,6 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { baseStyles, normalizeCSS } from '../../../styles/elements';
+import { baseStyles, normalizeCSS } from '@styles/elements';
 
 @customElement('room-skeleton')
 export class RoomSkeleton extends LitElement {

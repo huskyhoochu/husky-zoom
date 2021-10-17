@@ -22,4 +22,12 @@ export default {
     /* ... */
     out: 'dist/client',
   },
+  alias: {
+    '@components': './src/components',
+    '@fetcher': './src/fetcher',
+    '@pages': './src/pages',
+    '@styles': './src/styles',
+    '@types': './src/types',
+    '@app': './src/index',
+  },
 };

@@ -3,11 +3,11 @@ import { customElement } from 'lit/decorators.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Router } from '@vaadin/router';
 
-import '../components/structures/header';
-import '../components/structures/footer';
-import '../components/structures/footer';
-import '../components/structures/toast-stack';
-import { baseStyles, normalizeCSS } from '../styles/elements';
+import '@components/structures/header';
+import '@components/structures/footer';
+import '@components/structures/footer';
+import '@components/structures/toast-stack';
+import { baseStyles, normalizeCSS } from '@styles/elements';
 
 @customElement('sign-in')
 export class SignIn extends LitElement {

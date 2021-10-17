@@ -3,8 +3,8 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import '../components/structures/header';
 import '../components/structures/footer';
-import { baseStyles, normalizeCSS } from '../styles/elements';
-import { router } from '../index';
+import { baseStyles, normalizeCSS } from '@styles/elements';
+import { router } from '@app';
 import { Router } from '@vaadin/router';
 
 import '../components/pages/room-ready/pw-compare-modal';

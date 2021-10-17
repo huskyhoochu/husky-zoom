@@ -1,8 +1,8 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { baseStyles, normalizeCSS } from '../../../styles/elements';
+import { baseStyles, normalizeCSS } from '@styles/elements';
 
-import '../../structures/modal';
+import '@components/structures/modal';
 @customElement('pw-compare-modal')
 export class PwCompareModal extends LitElement {
   static styles = [normalizeCSS, baseStyles, css``];

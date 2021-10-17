@@ -1,7 +1,7 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { baseStyles, normalizeCSS } from '../../styles/elements';
+import { baseStyles, normalizeCSS } from '@styles/elements';
 
 @customElement('main-modal')
 export class MainModal extends LitElement {

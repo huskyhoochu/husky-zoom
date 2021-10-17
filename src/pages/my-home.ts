@@ -8,13 +8,13 @@ import { getDatabase, onValue, ref as dbRef, get } from 'firebase/database';
 import { io } from 'socket.io-client';
 import dayjs from 'dayjs';
 
-import '../components/structures/header';
-import '../components/structures/footer';
-import '../components/structures/toast-stack';
-import '../components/pages/my-home/room';
-import '../components/pages/my-home/skeleton';
-import '../components/pages/my-home/pw-modal';
-import { baseStyles, normalizeCSS } from '../styles/elements';
+import '@components/structures/header';
+import '@components/structures/footer';
+import '@components/structures/toast-stack';
+import '@components/pages/my-home/room';
+import '@components/pages/my-home/skeleton';
+import '@components/pages/my-home/pw-modal';
+import { baseStyles, normalizeCSS } from '@styles/elements';
 
 @customElement('my-home')
 export class MyHome extends LitElement {

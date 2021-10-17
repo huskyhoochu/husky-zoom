@@ -2,11 +2,11 @@ import { Router } from '@vaadin/router';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import 'normalize.css';
-import './styles/base.css';
+import '@styles/base.css';
 
-import './pages/my-home';
-import './pages/room-ready';
-import './pages/sign-in';
+import '@pages/my-home';
+import '@pages/room-ready';
+import '@pages/sign-in';
 
 const firebaseConfig = {
   apiKey: import.meta.env.SNOWPACK_PUBLIC_API_KEY,

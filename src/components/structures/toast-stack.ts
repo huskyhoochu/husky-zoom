@@ -2,7 +2,7 @@ import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { animate, fadeIn, fadeOut } from '@lit-labs/motion';
-import { baseStyles, normalizeCSS } from '../../styles/elements';
+import { baseStyles, normalizeCSS } from '@styles/elements';
 
 import { classMap } from 'lit/directives/class-map.js';
 

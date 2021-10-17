@@ -89,7 +89,7 @@ export class PwCompareModal extends LitElement {
       >
         <form class="form" @submit="${this._checkPassword}">
           <label for="password">
-            <input id="password" type="password" name="password" />
+            <input id="password" type="password" name="password" required />
           </label>
           <div class="form__button-group">
             <button @click="${this._toggleModal}" type="reset">취소</button>

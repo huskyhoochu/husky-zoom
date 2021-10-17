@@ -96,6 +96,21 @@ export class RoomReady extends LitElement {
         width: 50%;
         margin: 32px auto;
       }
+
+      .button-group {
+        display: grid;
+        grid: auto-flow / 50% 50%;
+        grid-column-gap: 8px;
+      }
+
+      .button-group button {
+        padding: 8px 0;
+      }
+
+      .button-group button[type='submit'] {
+        background-color: var(--indigo-500);
+        color: white;
+      }
     `,
   ];
 
@@ -205,6 +220,12 @@ export class RoomReady extends LitElement {
             <p class="status">현재 참여 중인 인원</p>
             <div class="dashboard">
               <room-member .room="${this._room}"></room-member>
+              <div class="button-group">
+                <button type="reset" @click="${() => Router.go('/')}">
+                  나가기
+                </button>
+                <button type="submit">입장하기</button>
+              </div>
             </div>
           </div>
         </div>

@@ -193,7 +193,9 @@ export class RoomReady extends LitElement {
             ${this._isLoading
     ? html`
                   <div class="loading">
-                    <span class="icon material-icons-outlined"> loop </span>
+                    <span class="icon material-icons-outlined">
+                      autorenew
+                    </span>
                   </div>
                 `
     : ''}

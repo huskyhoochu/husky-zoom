@@ -4,6 +4,8 @@ import { classMap } from 'lit/directives/class-map.js';
 import { baseStyles, normalizeCSS } from '@styles/elements';
 import dayjs from 'dayjs';
 
+import '@components/structures/room-member';
+
 @customElement('room-card')
 export class RoomCard extends LitElement {
   static styles = [
@@ -21,6 +23,10 @@ export class RoomCard extends LitElement {
         font-size: var(--font-sm);
         position: relative;
         transition: box-shadow 0.3s var(--tr-in-out);
+      }
+
+      .room:hover {
+        text-decoration: none;
       }
 
       .room__active {
@@ -56,45 +62,6 @@ export class RoomCard extends LitElement {
         width: 100%;
       }
 
-      .room__member {
-        margin: 16px 0;
-        display: flex;
-        align-items: center;
-      }
-
-      .host {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .host__img {
-        width: 70px;
-        height: 70px;
-        border-radius: 9999px;
-      }
-
-      .conn {
-        margin: 8px 0;
-        font-size: var(--font-xs);
-        display: flex;
-        align-items: center;
-      }
-
-      .conn__status {
-        display: inline-block;
-        width: var(--font-xs);
-        height: var(--font-xs);
-        border-radius: 9999px;
-        background-color: var(--gray-400);
-        margin-right: 4px;
-      }
-
-      .conn__active {
-        background-color: var(--green-400);
-      }
-
       .room__time {
         position: absolute;
         bottom: 0;
@@ -115,9 +82,6 @@ export class RoomCard extends LitElement {
   public myRoomEnabled = false;
 
   protected render(): TemplateResult {
-    const hostClasses = {
-      conn__active: this._hostConnStateEnabled,
-    };
     const myRoomClasses = {
       room__active: this.myRoomEnabled,
     };
@@ -126,18 +90,7 @@ export class RoomCard extends LitElement {
       class="room ${classMap(myRoomClasses)}"
     >
       <p class="room__badge">${this.room.id}</p>
-      <div class="room__member">
-        <div class="host">
-          <img
-            class="host__img"
-            src=${this.room.members.host.photo_url}
-            alt=${this.room.members.host.display_name}
-          />
-          <div class="conn">
-            <span class="conn__status ${classMap(hostClasses)}"></span>
-          </div>
-        </div>
-      </div>
+      <room-member .room="${this.room}"></room-member>
       <div class="room__time">
         <p>
           종료시각: ${dayjs(this.room.expires_at).format('YYYY.MM.DD HH.mm')}

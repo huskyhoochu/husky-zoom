@@ -9,8 +9,11 @@ import { Router } from '@vaadin/router';
 import '@components/structures/header';
 import '@components/structures/footer';
 import '@components/structures/toast-stack';
+import '@components/structures/room-member';
 import '@components/pages/room-ready/pw-compare-modal';
 import { videoConfig } from '@config/video';
+import { getDatabase, onValue } from 'firebase/database';
+import { ref as dbRef } from '@firebase/database';
 
 @customElement('room-ready')
 export class RoomReady extends LitElement {
@@ -76,11 +79,25 @@ export class RoomReady extends LitElement {
           transform: rotate(360deg);
         }
       }
+
+      .status {
+        color: var(--gray-700);
+        font-size: var(--font-sm);
+        font-weight: 700;
+      }
+
+      .dashboard {
+        width: 50%;
+        margin: 32px auto;
+      }
     `,
   ];
 
   @property({ type: Object })
   location = router.location;
+
+  @state()
+  private _room: Room;
 
   @state()
   private _isLoading = false;
@@ -94,6 +111,11 @@ export class RoomReady extends LitElement {
       if (!user) {
         Router.go('/auth/login');
       }
+    });
+    const database = getDatabase();
+    const roomRef = dbRef(database, `rooms/${this.location.params.id}`);
+    onValue(roomRef, (snapshot) => {
+      this._room = snapshot.val() as Room;
     });
     this.addEventListener('open-video', this.openLocalVideo);
   }
@@ -128,7 +150,12 @@ export class RoomReady extends LitElement {
     : ''}
             <video ${ref(this.localVideoRef)} autoplay playsinline></video>
           </div>
-          <div class="info-section"></div>
+          <div class="info-section">
+            <p class="status">현재 참여 중인 인원</p>
+            <div class="dashboard">
+              <room-member .room="${this._room}"></room-member>
+            </div>
+          </div>
         </div>
         <pw-compare-modal
           roomId="${this.location.params.id}"

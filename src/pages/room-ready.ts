@@ -165,6 +165,9 @@ export class RoomReady extends LitElement {
   }
 
   disconnectedCallback(): void {
+    (this.localVideoRef.value.srcObject as MediaStream)
+      ?.getTracks()
+      .forEach((track) => track.stop());
     window.removeEventListener('beforeunload', this.closeConnection);
     this.changeConnectionStatus('disconnected').finally(() => {
       super.disconnectedCallback();
@@ -202,6 +205,9 @@ export class RoomReady extends LitElement {
 
   private closeConnection = async (e: BeforeUnloadEvent): Promise<void> => {
     e.preventDefault();
+    (this.localVideoRef.value.srcObject as MediaStream)
+      ?.getTracks()
+      .forEach((track) => track.stop());
     await this.changeConnectionStatus('disconnected');
   };
 

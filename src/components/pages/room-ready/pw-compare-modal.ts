@@ -68,6 +68,7 @@ export class PwCompareModal extends LitElement {
       cancelable: true,
     });
     this.dispatchEvent(event);
+    this.onCancelCallback();
   }
 
   protected render(): TemplateResult {

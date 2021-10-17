@@ -25,11 +25,11 @@ export const createHashedPassword = (
 
 export const comparePassword = async (
   plainPassword: string,
-  compare: { password: string; salt: string },
+  compare: { value: string; salt: string },
 ): Promise<boolean> => {
   const comparePassword = await createHashedPassword(
     plainPassword,
     compare.salt,
   );
-  return comparePassword === compare.password;
+  return comparePassword === compare.value;
 };

@@ -417,3 +417,43 @@ export const baseStyles = css`
     margin: 32px 20px;
   }
 `;
+
+export const formStyles = css`
+  .form {
+    display: block;
+    margin: 16px 0;
+  }
+
+  label p {
+    margin-bottom: 4px;
+    font-size: var(--font-xs);
+    font-weight: 700;
+    color: var(--gray-400);
+  }
+
+  .form input {
+    width: 100%;
+    padding: 4px;
+    font-size: var(--font-lg);
+  }
+
+  .form__button-group {
+    margin-top: 24px;
+    display: grid;
+    grid: auto-flow / 130px 130px;
+    grid-column-gap: 8px;
+  }
+
+  .form__button-group button {
+    padding: 8px 0;
+  }
+
+  .form__button-group button[type='submit'] {
+    background-color: var(--indigo-500);
+    color: white;
+  }
+
+  .form__button-group button[type='submit'].loading {
+    opacity: 0.5;
+  }
+`;

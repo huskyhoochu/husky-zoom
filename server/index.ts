@@ -8,7 +8,7 @@ import schedule from 'node-schedule';
 import { v4 as uuidv4 } from 'uuid';
 import { Server } from 'socket.io';
 import { EventEmitter } from 'events';
-import { createHashedPassword, createSalt } from './encrypt';
+import { comparePassword, createHashedPassword, createSalt } from './encrypt';
 
 const app = express();
 const server = http.createServer(app);
@@ -125,6 +125,32 @@ app.post('/room', async (req: Request, res: Response) => {
     res.send({ okay: true, room_id: roomId });
   } catch (e) {
     console.log(e);
+    res.status(500).send(e);
+  }
+});
+
+app.post('/room/check', async (req: Request, res: Response) => {
+  const { password, room_id } = req.body;
+  const roomRef = fireDB.ref(`rooms/${room_id}`);
+  try {
+    const roomSnapshot = await roomRef.get();
+    const room = roomSnapshot.val();
+    const isCorrect = await comparePassword(
+      password,
+      room.members.host.password,
+    );
+    if (isCorrect) {
+      res.send({
+        okay: true,
+      });
+    } else {
+      res.status(401).send({
+        okay: false,
+        message: '비밀번호가 맞지 않습니다. 다시 시도해주세요',
+      });
+    }
+  } catch (e) {
+    console.log(e.message);
     res.status(500).send(e);
   }
 });

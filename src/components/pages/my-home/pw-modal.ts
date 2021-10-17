@@ -1,57 +1,16 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { baseStyles, normalizeCSS } from '@styles/elements';
-import Fetcher from '../../../fetcher';
+import { baseStyles, formStyles, normalizeCSS } from '@styles/elements';
+import Fetcher from '@fetcher/index';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-import '../../structures/modal';
+import '@components/structures/modal';
+import parseErrMsg from '@fetcher/parseErrMsg';
 
 @customElement('pw-modal')
 export class PwModal extends LitElement {
-  static styles = [
-    normalizeCSS,
-    baseStyles,
-    css`
-      .form {
-        display: block;
-        margin: 16px 0;
-      }
-
-      label p {
-        margin-bottom: 4px;
-        font-size: var(--font-xs);
-        font-weight: 700;
-        color: var(--gray-400);
-      }
-
-      .form input {
-        width: 100%;
-        padding: 4px;
-        font-size: var(--font-lg);
-      }
-
-      .form__button-group {
-        margin-top: 24px;
-        display: grid;
-        grid: auto-flow / 130px 130px;
-        grid-column-gap: 8px;
-      }
-
-      .form__button-group button {
-        padding: 8px 0;
-      }
-
-      .form__button-group button[type='submit'] {
-        background-color: var(--indigo-500);
-        color: white;
-      }
-
-      .form__button-group button[type='submit'].loading {
-        opacity: 0.5;
-      }
-    `,
-  ];
+  static styles = [normalizeCSS, baseStyles, formStyles, css``];
 
   @state()
   private _user = {
@@ -85,7 +44,7 @@ export class PwModal extends LitElement {
     });
   }
 
-  public async _createRoom(e: SubmitEvent): Promise<void> {
+  private async _createRoom(e: SubmitEvent): Promise<void> {
     this._isLoading = true;
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -122,11 +81,12 @@ export class PwModal extends LitElement {
         this.isOpen = false;
       }
     } catch (e) {
+      const message = parseErrMsg(e);
       const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
         detail: {
           intent: 'danger',
           title: '방 생성 오류',
-          message: e.message,
+          message,
         },
         bubbles: true,
         composed: true,
@@ -139,7 +99,7 @@ export class PwModal extends LitElement {
     }
   }
 
-  _toggleModal(): void {
+  private _toggleModal(): void {
     this.isOpen = !this.isOpen;
     const event = new CustomEvent('modal-closed', {
       bubbles: true,

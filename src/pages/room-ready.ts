@@ -7,7 +7,8 @@ import { baseStyles, normalizeCSS } from '@styles/elements';
 import { router } from '@app';
 import { Router } from '@vaadin/router';
 
-import '../components/pages/room-ready/pw-compare-modal';
+import '@components/structures/toast-stack';
+import '@components/pages/room-ready/pw-compare-modal';
 
 @customElement('room-ready')
 export class RoomReady extends LitElement {
@@ -34,9 +35,12 @@ export class RoomReady extends LitElement {
       <main-header></main-header>
       <main>
         <h1>${this.location.params.id}</h1>
-        <pw-compare-modal></pw-compare-modal>
+        <pw-compare-modal
+          roomId="${this.location.params.id}"
+        ></pw-compare-modal>
       </main>
       <main-footer></main-footer>
+      <toast-stack></toast-stack>
     `;
   }
 }

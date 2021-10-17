@@ -7,6 +7,7 @@ import '@styles/base.css';
 import '@pages/my-home';
 import '@pages/room-ready';
 import '@pages/sign-in';
+import '@pages/room-start';
 
 const firebaseConfig = {
   apiKey: import.meta.env.SNOWPACK_PUBLIC_API_KEY,
@@ -26,6 +27,7 @@ export const router = new Router(document.getElementById('outlet'));
 router.setRoutes([
   { path: '/', component: 'my-home' },
   { path: '/room/ready/:id', component: 'room-ready' },
+  { path: '/room/start/:id', component: 'room-start' },
   { path: '/auth/login', component: 'sign-in' },
 ]);
 

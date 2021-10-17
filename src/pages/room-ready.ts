@@ -174,6 +174,28 @@ export class RoomReady extends LitElement {
     });
   }
 
+  protected firstUpdated(): void {
+    this.checkErrorParams();
+  }
+
+  checkErrorParams(): void {
+    const searchParams = new URLSearchParams(window.location.search);
+    const message = searchParams.get('message');
+    if (message) {
+      const toastEvent = new CustomEvent<ToastEvent>('add-toast', {
+        detail: {
+          intent: 'danger',
+          title: '입장 오류',
+          message,
+        },
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+      });
+      this.dispatchEvent(toastEvent);
+    }
+  }
+
   async openLocalVideo(): Promise<void> {
     this._isLoading = true;
     await this.changeConnectionStatus('ready');
@@ -216,7 +238,7 @@ export class RoomReady extends LitElement {
       const resp = await Fetcher.axios.post('/room/jwt');
       const { okay, token } = resp.data as { okay: boolean; token: string };
       if (okay) {
-        Router.go(`/room/start?token=${token}`);
+        Router.go(`/room/start/${this.location.params.id}?token=${token}`);
       }
     } catch (e) {
       const message = parseErrMsg(e);

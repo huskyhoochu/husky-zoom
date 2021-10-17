@@ -11,6 +11,7 @@ import {
   createJWTForRoom,
   createRoom,
   removeRoomSchedule,
+  verifyJWTForRoom,
 } from './handler';
 
 const app = express();
@@ -50,6 +51,7 @@ app.get('*', (req: Request, res: Response) => {
 app.post('/room', createRoom(fireDB));
 app.post('/room/check', checkRoomPassword(fireDB));
 app.post('/room/jwt', createJWTForRoom);
+app.post('/room/verify', verifyJWTForRoom);
 
 io.on('connection', (socket) => {
   dbEmitter.on('admin-delete-room', (roomId) => {

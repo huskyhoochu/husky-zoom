@@ -4,7 +4,7 @@ export default function parseErrMsg(e: AxiosError): string {
   // https://yamoo9.github.io/axios/guide/error-handling.html
   if (e.response) {
     // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
-    if (e.response.status === 401) {
+    if (e.response.status > 399) {
       const { message } = e.response.data as { message: string };
       return message;
     }

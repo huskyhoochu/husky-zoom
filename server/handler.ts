@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import admin from 'firebase-admin';
-import jwt from 'jsonwebtoken';
+import jwt, { VerifyErrors } from 'jsonwebtoken';
 import * as EventEmitter from 'events';
 import { comparePassword, createHashedPassword, createSalt } from './encrypt';
 
@@ -135,10 +135,26 @@ export const createJWTForRoom = async (
 ): Promise<void> => {
   const secretKey = process.env.JWT_KEY;
   const token = jwt.sign({ okay: true }, secretKey, {
-    expiresIn: 30,
+    expiresIn: 10,
   });
   res.send({
     okay: true,
     token,
+  });
+};
+
+// 방 입장을 위한 jwt 토큰 검증 핸들러
+export const verifyJWTForRoom = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const { token } = req.body as { token: string };
+  const secretKey = process.env.JWT_KEY;
+  jwt.verify(token, secretKey, (err: VerifyErrors) => {
+    if (err) {
+      res.status(401).send(err);
+    } else {
+      res.send({ okay: true });
+    }
   });
 };

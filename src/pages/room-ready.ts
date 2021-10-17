@@ -137,13 +137,11 @@ export class RoomReady extends LitElement {
       this._room = snapshot.val() as Room;
     });
     this.addEventListener('open-video', this.openLocalVideo);
-    window.addEventListener('beforeunload', async (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      await this.changeConnectionStatus('disconnected');
-    });
+    window.addEventListener('beforeunload', this.closeConnection);
   }
 
   disconnectedCallback(): void {
+    window.removeEventListener('beforeunload', this.closeConnection);
     this.changeConnectionStatus('disconnected').finally(() => {
       super.disconnectedCallback();
     });
@@ -177,6 +175,11 @@ export class RoomReady extends LitElement {
       return room;
     });
   }
+
+  private closeConnection = async (e: BeforeUnloadEvent): Promise<void> => {
+    e.preventDefault();
+    await this.changeConnectionStatus('disconnected');
+  };
 
   protected render(): TemplateResult {
     return html`

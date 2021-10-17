@@ -9,9 +9,13 @@ declare interface Room {
       display_name: string;
       photo_url: string;
       connection: {
-        is_connected: boolean;
+        status: 'disconnected' | 'ready' | 'connecting';
         connected_at: string;
         disconnected_at: string;
+      };
+      password: {
+        value: string;
+        salt: string;
       };
     };
     guest: {
@@ -20,9 +24,13 @@ declare interface Room {
       display_name: string;
       photo_url: string;
       connection: {
-        is_connected: boolean;
+        status: 'disconnected' | 'ready' | 'connecting';
         connected_at: string;
         disconnected_at: string;
+      };
+      password: {
+        value: string;
+        salt: string;
       };
     };
   };

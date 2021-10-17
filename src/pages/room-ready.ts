@@ -12,8 +12,14 @@ import '@components/structures/toast-stack';
 import '@components/structures/room-member';
 import '@components/pages/room-ready/pw-compare-modal';
 import { videoConfig } from '@config/video';
-import { getDatabase, onValue } from 'firebase/database';
+import {
+  getDatabase,
+  onValue,
+  runTransaction,
+  TransactionResult,
+} from 'firebase/database';
 import { ref as dbRef } from '@firebase/database';
+import { initRoom } from '@config/room';
 
 @customElement('room-ready')
 export class RoomReady extends LitElement {
@@ -97,7 +103,15 @@ export class RoomReady extends LitElement {
   location = router.location;
 
   @state()
-  private _room: Room;
+  private _room: Room = initRoom;
+
+  @state()
+  private _user: UserInfo = {
+    uid: '',
+    email: '',
+    displayName: '',
+    photoURL: '',
+  };
 
   @state()
   private _isLoading = false;
@@ -108,7 +122,12 @@ export class RoomReady extends LitElement {
     super.connectedCallback();
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
+      if (user) {
+        this._user.uid = user.uid;
+        this._user.email = user.email;
+        this._user.photoURL = user.photoURL;
+        this._user.displayName = user.displayName;
+      } else {
         Router.go('/auth/login');
       }
     });
@@ -121,15 +140,39 @@ export class RoomReady extends LitElement {
   }
 
   disconnectedCallback(): void {
-    this.removeEventListener('open-video', this.openLocalVideo);
-    super.disconnectedCallback();
+    this.changeConnectionStatus('disconnected').finally(() => {
+      this.removeEventListener('open-video', this.openLocalVideo);
+      super.disconnectedCallback();
+    });
   }
 
   async openLocalVideo(): Promise<void> {
     this._isLoading = true;
+    await this.changeConnectionStatus('ready');
     this.localVideoRef.value.srcObject =
       await navigator.mediaDevices.getUserMedia(videoConfig);
     this._isLoading = false;
+  }
+
+  async changeConnectionStatus(
+    status: 'disconnected' | 'ready',
+  ): Promise<TransactionResult> {
+    const database = getDatabase();
+    const roomRef = dbRef(database, `rooms/${this.location.params.id}`);
+    return runTransaction(roomRef, (room: Room) => {
+      if (room) {
+        if (this._user.uid === room.members.host.uid) {
+          room.members.host.connection.status = status;
+        } else {
+          room.members.guest.connection.status = status;
+          room.members.guest.uid = this._user.uid;
+          room.members.guest.email = this._user.email;
+          room.members.guest.photo_url = this._user.photoURL;
+          room.members.guest.display_name = this._user.displayName;
+        }
+      }
+      return room;
+    });
   }
 
   protected render(): TemplateResult {

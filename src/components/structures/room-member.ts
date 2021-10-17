@@ -53,7 +53,11 @@ export class RoomMember extends LitElement {
         background-color: var(--gray-400);
       }
 
-      .conn__active {
+      .ready {
+        background-color: var(--yellow-400);
+      }
+
+      .active {
         background-color: var(--green-400);
       }
     `,
@@ -64,10 +68,12 @@ export class RoomMember extends LitElement {
 
   protected render(): TemplateResult {
     const hostClasses = {
-      active: this.room.members.host.connection.is_connected,
+      active: this.room.members.host.connection.status === 'connecting',
+      ready: this.room.members.host.connection.status === 'ready',
     };
     const guestClasses = {
-      active: this.room.members.guest.connection.is_connected,
+      active: this.room.members.guest.connection.status === 'connecting',
+      ready: this.room.members.guest.connection.status === 'ready',
     };
 
     return html`

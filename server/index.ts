@@ -97,9 +97,9 @@ app.post('/room', async (req: Request, res: Response) => {
           uid,
           email,
           display_name,
-          photo_url: photo_url,
+          photo_url,
           connection: {
-            is_connected: false,
+            status: 'disconnected',
             connected_at: '',
             disconnected_at: '',
           },
@@ -114,7 +114,7 @@ app.post('/room', async (req: Request, res: Response) => {
           display_name: '',
           photo_url: '',
           connection: {
-            is_connected: false,
+            status: 'disconnected',
             connected_at: '',
             disconnected_at: '',
           },

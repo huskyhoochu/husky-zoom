@@ -124,7 +124,7 @@ export const checkRoomPassword =
         }
       } catch (e) {
         console.log(e.message);
-        res.status(500).send(e);
+        res.status(500).send({ okay: false, message: e.message });
       }
     };
 

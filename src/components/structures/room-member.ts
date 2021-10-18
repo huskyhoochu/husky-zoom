@@ -2,6 +2,7 @@ import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { baseStyles, normalizeCSS } from '@styles/elements';
+import { initRoom } from '@config/room';
 
 @customElement('room-member')
 export class RoomMember extends LitElement {
@@ -64,7 +65,7 @@ export class RoomMember extends LitElement {
   ];
 
   @property({ type: Object })
-  public room: Room;
+  public room: Room = initRoom;
 
   protected render(): TemplateResult {
     const hostClasses = {

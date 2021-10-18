@@ -1,5 +1,6 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { io } from 'socket.io-client';
 import { baseStyles, normalizeCSS } from '@styles/elements';
 import { router } from '@app';
 import { Router } from '@vaadin/router';
@@ -21,11 +22,12 @@ export class RoomStart extends LitElement {
     super.connectedCallback();
     this.sendToken()
       .then(() => {
-        alert('통과');
-        // 커넥션 실행하자
+        const socket = io();
+        socket.on('connect', () => {
+          socket.emit('join-room', this.location.params.id);
+        });
       })
       .catch((e) => {
-        // 에러 처리
         let message = parseErrMsg(e);
         if (message === 'jwt expired') {
           message = '입장 토큰이 만료되었습니다. 다시 입장해주세요';

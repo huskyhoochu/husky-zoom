@@ -39,8 +39,6 @@ export class PwCompareModal extends LitElement {
       const { okay } = resp.data as { okay: boolean };
       if (okay) {
         this.isOpen = false;
-        /* TODO: 여기서부터 정식으로 방에 입장하여 소켓 연결을 시작한다
-         * */
         const event = new CustomEvent('open-video', {
           bubbles: true,
           composed: true,

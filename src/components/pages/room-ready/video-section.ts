@@ -116,7 +116,7 @@ export class VideoSection extends LitElement {
     this._isLoading = true;
     await this.changeConnectionStatus('ready');
     this._localVideoRef.value.srcObject =
-      await navigator.mediaDevices.getUserMedia(videoConfig);
+      await window.navigator.mediaDevices.getUserMedia(videoConfig);
     this._isLoading = false;
   };
 

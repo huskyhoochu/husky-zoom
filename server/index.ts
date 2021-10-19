@@ -57,6 +57,23 @@ io.on('connection', (socket) => {
   dbEmitter.on('admin-delete-room', (roomId) => {
     socket.emit('delete-room', roomId);
   });
+
+  socket.on('join-room', (roomId: string) => {
+    socket.join(roomId);
+    socket.to(roomId).emit('user-connected');
+  });
+
+  socket.on('offer', (offer: RTCSessionDescriptionInit, roomId: string) => {
+    socket.to(roomId).emit('offer', offer);
+  });
+
+  socket.on('answer', (answer: RTCSessionDescriptionInit, roomId: string) => {
+    socket.to(roomId).emit('answer', answer);
+  });
+
+  socket.on('ice', (ice: RTCIceCandidate, roomId: string) => {
+    socket.to(roomId).emit('ice', ice);
+  });
 });
 
 const PORT = process.env.PORT;

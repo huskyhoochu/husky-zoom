@@ -457,3 +457,52 @@ export const formStyles = css`
     opacity: 0.5;
   }
 `;
+
+export const videoStyles = css`
+  .video-section {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .video-section video {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .loading {
+    position: absolute;
+    inset: 0;
+    width: 120px;
+    height: 120px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation-name: loop;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    animation-timing-function: var(--tr-linear);
+    animation-iteration-count: infinite;
+  }
+
+  .loading .icon {
+    font-family: 'Material Icons', serif;
+    font-style: normal;
+    font-size: 120px;
+  }
+
+  @keyframes loop {
+    0% {
+      transform: rotate(0);
+    }
+
+    50% {
+      transform: rotate(180deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;

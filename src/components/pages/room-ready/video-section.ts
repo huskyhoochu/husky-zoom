@@ -1,6 +1,6 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { baseStyles, normalizeCSS } from '@styles/elements';
+import { baseStyles, normalizeCSS, videoStyles } from '@styles/elements';
 import { createRef, Ref, ref } from 'lit/directives/ref.js';
 import { videoConfig } from '@config/video';
 import {
@@ -14,58 +14,7 @@ import { Router } from '@vaadin/router';
 
 @customElement('video-section')
 export class VideoSection extends LitElement {
-  static styles = [
-    normalizeCSS,
-    baseStyles,
-    css`
-      .video-section {
-        width: 100%;
-        height: 100%;
-        position: relative;
-      }
-
-      .video-section video {
-        display: block;
-        margin: 0 auto;
-      }
-
-      .loading {
-        position: absolute;
-        inset: 0;
-        width: 120px;
-        height: 120px;
-        margin: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        animation-name: loop;
-        animation-duration: 1s;
-        animation-fill-mode: both;
-        animation-timing-function: var(--tr-linear);
-        animation-iteration-count: infinite;
-      }
-
-      .loading .icon {
-        font-family: 'Material Icons', serif;
-        font-style: normal;
-        font-size: 120px;
-      }
-
-      @keyframes loop {
-        0% {
-          transform: rotate(0);
-        }
-
-        50% {
-          transform: rotate(180deg);
-        }
-
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-    `,
-  ];
+  static styles = [normalizeCSS, baseStyles, videoStyles, css``];
 
   @property({ type: String })
   public roomId = '';
@@ -81,7 +30,7 @@ export class VideoSection extends LitElement {
   @state()
   private _isLoading = false;
 
-  @property()
+  @state()
   private _localVideoRef: Ref<HTMLVideoElement> = createRef();
 
   connectedCallback(): void {
